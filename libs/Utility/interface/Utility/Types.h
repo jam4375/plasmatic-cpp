@@ -4,5 +4,5 @@
 
 namespace plasmatic {
 using Float = double;
-using Integer = int64_t;
+using Integer = int32_t;
 } // namespace plasmatic

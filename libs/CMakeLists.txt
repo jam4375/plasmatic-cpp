@@ -1,2 +1,2 @@
-add_subdirectory(ExampleLib)
 add_subdirectory(Utility)
+add_subdirectory(LinearAlgebra)

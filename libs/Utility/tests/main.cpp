@@ -5,7 +5,7 @@
 namespace plasmatic {
 TEST(UtilityTest, Types) {
     EXPECT_EQ(sizeof(Float), 8);
-    EXPECT_EQ(sizeof(Integer), 8);
+    EXPECT_EQ(sizeof(Integer), 4);
 }
 } // namespace plasmatic
 
