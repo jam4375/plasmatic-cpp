@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20.0)
 
-project(templo CXX)
+project(plasmatic CXX)
 
 # Setup project configuration:
 include("${${PROJECT_NAME}_SOURCE_DIR}/config/config.cmake")

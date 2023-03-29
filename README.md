@@ -1,10 +1,10 @@
-# templo
-Template for new C++ projects
+# plasmatic
+Finite element simulation code
 
 ## Building
 ```bash
-git clone git@github.com:jam4375/templo.git
-cd templo
+git clone git@github.com:jam4375/plasmatic-cpp.git
+cd plasmatic-cpp
 mkdir build
 cd build
 cmake ..

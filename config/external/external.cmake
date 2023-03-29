@@ -6,6 +6,7 @@ set(CMAKE_CXX_CLANG_TIDY
 
 include("${CMAKE_CURRENT_LIST_DIR}/gtest.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cxxopts.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/fmt.cmake")
 
 # Restore clang-tidy configuration:
 set(CMAKE_CXX_CLANG_TIDY

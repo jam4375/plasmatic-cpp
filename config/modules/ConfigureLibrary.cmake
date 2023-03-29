@@ -19,7 +19,6 @@ function(configure_library)
 
         target_link_libraries(${LibraryTargetName} INTERFACE ${LIB_INTERFACE_LINK_LIBRARIES})
     else()
-
         add_library(${LibraryTargetName} ${LIB_SOURCE_FILES})
         add_library(${PROJECT_NAME}::${LIB_NAME} ALIAS ${LibraryTargetName})
 
