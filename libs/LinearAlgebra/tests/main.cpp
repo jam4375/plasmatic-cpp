@@ -153,9 +153,7 @@ int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
 
     PetscErrorCode ierr = PetscInitialize(&argc, &argv, "", "");
-    if (ierr != 0) {
-        std::abort();
-    }
+    plasmatic::Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
 
     return RUN_ALL_TESTS();
 }
