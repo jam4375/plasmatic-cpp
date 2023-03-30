@@ -15,6 +15,42 @@ TEST(LinearAlgebraTest, Vector) {
     vec.AddValue(0, 20.0);
     vec.Assemble();
     EXPECT_DOUBLE_EQ(vec.GetValue(0), 44.0);
+
+    Vector vec2(5);
+    vec2.SetValue(0, 2.0);
+    vec2.SetValue(1, 8.0);
+
+    {
+        auto vec3 = vec + vec2;
+        EXPECT_DOUBLE_EQ(vec3.GetValue(0), 46.0);
+        EXPECT_DOUBLE_EQ(vec3.GetValue(1), 8.0);
+        EXPECT_DOUBLE_EQ(vec3.GetValue(2), 0.0);
+    }
+
+    {
+        auto vec3 = vec - vec2;
+        EXPECT_DOUBLE_EQ(vec3.GetValue(0), 42.0);
+        EXPECT_DOUBLE_EQ(vec3.GetValue(1), -8.0);
+        EXPECT_DOUBLE_EQ(vec3.GetValue(2), 0.0);
+    }
+
+    {
+        auto vec3 = vec;
+
+        vec3 += vec2;
+        EXPECT_DOUBLE_EQ(vec3.GetValue(0), 46.0);
+        EXPECT_DOUBLE_EQ(vec3.GetValue(1), 8.0);
+        EXPECT_DOUBLE_EQ(vec3.GetValue(2), 0.0);
+    }
+
+    {
+        auto vec3 = vec;
+
+        vec3 -= vec2;
+        EXPECT_DOUBLE_EQ(vec3.GetValue(0), 42.0);
+        EXPECT_DOUBLE_EQ(vec3.GetValue(1), -8.0);
+        EXPECT_DOUBLE_EQ(vec3.GetValue(2), 0.0);
+    }
 }
 } // namespace plasmatic
 

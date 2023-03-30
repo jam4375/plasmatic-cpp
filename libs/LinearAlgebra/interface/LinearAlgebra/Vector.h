@@ -10,6 +10,8 @@ class Vector {
   public:
     Vector(Integer global_size);
 
+    Vector(Vector &other);
+
     Integer Size() const;
 
     void AddValue(Integer pos, Float value);
@@ -19,6 +21,14 @@ class Vector {
     void Assemble();
 
     Float GetValue(Integer pos);
+
+    Vector operator+(const Vector &other);
+
+    Vector operator-(const Vector &other);
+
+    Vector &operator+=(const Vector &other);
+
+    Vector &operator-=(const Vector &other);
 
   private:
     Vec _data;

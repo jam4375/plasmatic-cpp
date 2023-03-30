@@ -26,6 +26,19 @@ Vector::Vector(Integer global_size) {
     }
 }
 
+// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
+Vector::Vector(Vector &other) {
+    PetscErrorCode ierr = VecDuplicate(other._data, &_data);
+    if (ierr != 0) {
+        std::abort();
+    }
+
+    ierr = VecCopy(other._data, _data);
+    if (ierr != 0) {
+        std::abort();
+    }
+}
+
 Integer Vector::Size() const {
     Integer size = 0;
     const PetscErrorCode ierr = VecGetSize(_data, &size);
@@ -70,6 +83,42 @@ Float Vector::GetValue(Integer pos) {
     }
 
     return value;
+}
+
+Vector Vector::operator+(const Vector &other) {
+    Vector result(this->Size());
+
+    const PetscErrorCode ierr = VecAXPBYPCZ(result._data, 1.0, 1.0, 0.0, _data, other._data);
+    if (ierr != 0) {
+        std::abort();
+    }
+    return result;
+}
+
+Vector Vector::operator-(const Vector &other) {
+    Vector result(this->Size());
+
+    const PetscErrorCode ierr = VecAXPBYPCZ(result._data, 1.0, -1.0, 0.0, _data, other._data);
+    if (ierr != 0) {
+        std::abort();
+    }
+    return result;
+}
+
+Vector &Vector::operator+=(const Vector &other) {
+    const PetscErrorCode ierr = VecAXPY(this->_data, 1.0, other._data);
+    if (ierr != 0) {
+        std::abort();
+    }
+    return *this;
+}
+
+Vector &Vector::operator-=(const Vector &other) {
+    const PetscErrorCode ierr = VecAXPY(this->_data, -1.0, other._data);
+    if (ierr != 0) {
+        std::abort();
+    }
+    return *this;
 }
 
 } // namespace plasmatic
