@@ -1,5 +1,5 @@
 ---
-Checks:          'clang-diagnostic-*,clang-analyzer-*,*,-llvmlibc-restrict-system-libc-headers,-llvmlibc-*,-fuchsia-*,-misc-use-anonymous-namespace,-modernize-use-trailing-return-type,-bugprone-easily-swappable-parameters'
+Checks:          'clang-diagnostic-*,clang-analyzer-*,*,-llvmlibc-restrict-system-libc-headers,-llvmlibc-*,-fuchsia-*,-misc-use-anonymous-namespace,-modernize-use-trailing-return-type,-bugprone-easily-swappable-parameters,-misc-const-correctness'
 WarningsAsErrors: '*'
 HeaderFilterRegex: '^((?!/include/gtest/|/cocos/scripting/).)*$'
 AnalyzeTemporaryDtors: false

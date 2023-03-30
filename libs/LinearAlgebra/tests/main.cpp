@@ -55,10 +55,10 @@ TEST(LinearAlgebraTest, Vector) {
 }
 
 TEST(LinearAlgebraTest, Matrix) {
-    Matrix mat(5, 6);
+    Matrix mat(5, 5);
 
     EXPECT_EQ(mat.Rows(), 5);
-    EXPECT_EQ(mat.Cols(), 6);
+    EXPECT_EQ(mat.Cols(), 5);
 
     mat.SetValue(0, 0, 24.0);
     mat.SetValue(1, 1, 0.0);
@@ -69,7 +69,7 @@ TEST(LinearAlgebraTest, Matrix) {
     mat.Assemble();
     EXPECT_DOUBLE_EQ(mat.GetValue(0, 0), 44.0);
 
-    Matrix mat2(5, 6);
+    Matrix mat2(5, 5);
     mat2.SetValue(0, 0, 2.0);
     mat2.SetValue(1, 1, 8.0);
     mat2.Assemble();
@@ -105,6 +105,18 @@ TEST(LinearAlgebraTest, Matrix) {
         EXPECT_DOUBLE_EQ(mat3.GetValue(0, 0), 42.0);
         EXPECT_DOUBLE_EQ(mat3.GetValue(1, 1), -8.0);
         EXPECT_DOUBLE_EQ(mat3.GetValue(2, 0), 0.0);
+    }
+
+    {
+        Vector x(5);
+        x.SetValue(0, 1);
+        x.SetValue(1, 1);
+        x.Assemble();
+
+        auto y = mat2 * x;
+        EXPECT_DOUBLE_EQ(y.GetValue(0), 2.0);
+        EXPECT_DOUBLE_EQ(y.GetValue(1), 8.0);
+        EXPECT_DOUBLE_EQ(y.GetValue(2), 0.0);
     }
 }
 } // namespace plasmatic

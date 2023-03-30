@@ -2,6 +2,8 @@
 
 #include "Utility/Utility.h"
 
+#include "Vector.h"
+
 #include <petscmat.h>
 
 namespace plasmatic {
@@ -10,7 +12,7 @@ class Matrix {
   public:
     Matrix(Integer global_rows, Integer global_cols);
 
-    Matrix(Matrix &other);
+    Matrix(const Matrix &other);
 
     Integer Rows() const;
 
@@ -31,6 +33,8 @@ class Matrix {
     Matrix &operator+=(const Matrix &other);
 
     Matrix &operator-=(const Matrix &other);
+
+    Vector operator*(const Vector &other);
 
   private:
     Mat _data;

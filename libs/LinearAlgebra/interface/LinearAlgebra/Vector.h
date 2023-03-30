@@ -10,7 +10,7 @@ class Vector {
   public:
     Vector(Integer global_size);
 
-    Vector(Vector &other);
+    Vector(const Vector &other);
 
     Integer Size() const;
 
@@ -29,6 +29,8 @@ class Vector {
     Vector &operator+=(const Vector &other);
 
     Vector &operator-=(const Vector &other);
+
+    friend class Matrix;
 
   private:
     Vec _data;

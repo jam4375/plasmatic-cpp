@@ -27,7 +27,7 @@ Matrix::Matrix(Integer global_rows, Integer global_cols) {
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
-Matrix::Matrix(Matrix &other) {
+Matrix::Matrix(const Matrix &other) {
     const PetscErrorCode ierr = MatDuplicate(other._data, MAT_COPY_VALUES, &_data);
     if (ierr != 0) {
         std::abort();
@@ -126,6 +126,16 @@ Matrix &Matrix::operator-=(const Matrix &other) {
         std::abort();
     }
     return *this;
+}
+
+Vector Matrix::operator*(const Vector &other) {
+    Vector result(other);
+
+    const PetscErrorCode ierr = MatMult(this->_data, other._data, result._data);
+    if (ierr != 0) {
+        std::abort();
+    }
+    return result;
 }
 
 } // namespace plasmatic

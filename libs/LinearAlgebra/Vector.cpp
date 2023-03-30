@@ -27,7 +27,7 @@ Vector::Vector(Integer global_size) {
 }
 
 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
-Vector::Vector(Vector &other) {
+Vector::Vector(const Vector &other) {
     PetscErrorCode ierr = VecDuplicate(other._data, &_data);
     if (ierr != 0) {
         std::abort();
