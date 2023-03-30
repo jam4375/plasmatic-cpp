@@ -12,7 +12,7 @@ find_package(MPI REQUIRED)
 
 # cmake-format: off
 configure_library(NAME LinearAlgebra
-                  SOURCE_FILES Vector.cpp
+                  SOURCE_FILES Vector.cpp Matrix.cpp
                   SOURCE_DIR "."
                   INTERFACE_DIR "interface"
                   BUILD_LINK_LIBRARIES ""
