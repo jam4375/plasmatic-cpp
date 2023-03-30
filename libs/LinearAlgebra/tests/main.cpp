@@ -119,6 +119,34 @@ TEST(LinearAlgebraTest, Matrix) {
         EXPECT_DOUBLE_EQ(y.GetValue(2), 0.0);
     }
 }
+
+TEST(LinearAlgebraTest, LinearSolver) {
+    Matrix mat(5, 5);
+
+    mat.SetValue(0, 0, 1.0);
+    mat.SetValue(4, 4, 1.0);
+    for (Integer ii = 1; ii < 4; ++ii) {
+        mat.SetValue(ii, ii - 1, -1.0);
+        mat.SetValue(ii, ii, 2.0);
+        mat.SetValue(ii, ii + 1, -1.0);
+    }
+    mat.Assemble();
+
+    Vector rhs(5);
+
+    for (Integer ii = 0; ii < 5; ++ii) {
+        rhs.SetValue(ii, 1.0);
+    }
+
+    auto ans = mat.Solve(rhs);
+
+    constexpr auto tol = 1.0e-8;
+    EXPECT_NEAR(ans.GetValue(0), 1.0, tol);
+    EXPECT_NEAR(ans.GetValue(1), 2.5, tol);
+    EXPECT_NEAR(ans.GetValue(2), 3.0, tol);
+    EXPECT_NEAR(ans.GetValue(3), 2.5, tol);
+    EXPECT_NEAR(ans.GetValue(4), 1.0, tol);
+}
 } // namespace plasmatic
 
 int main(int argc, char **argv) {

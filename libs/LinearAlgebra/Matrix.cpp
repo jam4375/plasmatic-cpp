@@ -1,5 +1,7 @@
 #include "interface/LinearAlgebra/Matrix.h"
 
+#include <petscksp.h>
+
 namespace plasmatic {
 
 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init,hicpp-member-init)
@@ -135,6 +137,48 @@ Vector Matrix::operator*(const Vector &other) {
     if (ierr != 0) {
         std::abort();
     }
+    return result;
+}
+
+Vector Matrix::Solve(const Vector &other) {
+    KSP ksp = nullptr;
+
+    PetscErrorCode ierr = KSPCreate(PETSC_COMM_WORLD, &ksp);
+    if (ierr != 0) {
+        std::abort();
+    }
+
+    ierr = KSPSetOperators(ksp, this->_data, this->_data);
+    if (ierr != 0) {
+        std::abort();
+    }
+
+    PC preconditioner = nullptr;
+    ierr = KSPGetPC(ksp, &preconditioner);
+    if (ierr != 0) {
+        std::abort();
+    }
+    ierr = PCSetType(preconditioner, PCJACOBI);
+    if (ierr != 0) {
+        std::abort();
+    }
+    constexpr auto tol = 1.0e-10;
+    ierr = KSPSetTolerances(ksp, tol, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);
+    if (ierr != 0) {
+        std::abort();
+    }
+
+    ierr = KSPSetFromOptions(ksp);
+    if (ierr != 0) {
+        std::abort();
+    }
+
+    Vector result(other);
+    ierr = KSPSolve(ksp, other._data, result._data);
+    if (ierr != 0) {
+        std::abort();
+    }
+
     return result;
 }
 

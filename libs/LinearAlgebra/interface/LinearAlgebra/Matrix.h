@@ -36,6 +36,8 @@ class Matrix {
 
     Vector operator*(const Vector &other);
 
+    Vector Solve(const Vector &other);
+
   private:
     Mat _data;
 };
