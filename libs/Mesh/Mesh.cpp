@@ -43,6 +43,7 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                     std::stringstream ss(line);
                     ss >> coord.x >> coord.y >> coord.z;
 
+                    _entities[entity_tag].push_back(static_cast<Integer>(_nodes->size()));
                     _nodes->push_back(coord);
                 }
             }

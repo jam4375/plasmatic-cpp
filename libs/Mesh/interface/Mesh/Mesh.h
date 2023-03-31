@@ -8,6 +8,7 @@
 #include <array>
 #include <filesystem>
 #include <vector>
+#include <unordered_map>
 
 namespace plasmatic {
 
@@ -18,6 +19,8 @@ class Mesh {
   private:
     std::shared_ptr<std::vector<Coord>> _nodes;
     std::vector<std::shared_ptr<Element>> _elements;
+
+    std::unordered_map<Integer, std::vector<Integer>> _entities;
 };
 
 } // namespace plasmatic
