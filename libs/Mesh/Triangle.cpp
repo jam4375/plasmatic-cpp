@@ -31,7 +31,7 @@ Float Triangle::ShapeFn([[maybe_unused]] Integer index, [[maybe_unused]] const C
         return lambda2;
     }
 
-    return std::numeric_limits<Float>::quiet_NaN();
+    Abort("Invalid shape function index: {}", index);
 }
 
 } // namespace plasmatic
