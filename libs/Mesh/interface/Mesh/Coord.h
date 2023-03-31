@@ -5,9 +5,9 @@
 namespace plasmatic {
 
 struct Coord {
-    Float x;
-    Float y;
-    Float z;
+    Float x = std::numeric_limits<Float>::quiet_NaN();
+    Float y = std::numeric_limits<Float>::quiet_NaN();
+    Float z = std::numeric_limits<Float>::quiet_NaN();
 };
 
 } // namespace plasmatic

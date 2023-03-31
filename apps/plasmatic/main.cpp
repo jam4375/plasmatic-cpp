@@ -1,13 +1,16 @@
+#include "Mesh/Mesh.h"
 #include "Utility/Utility.h"
 
 #include <cxxopts.hpp>
 
 namespace plasmatic {
-static auto Run() -> int {
+static auto Run(const std::string &mesh_filepath) -> int {
     Log::Info("Hello world! (info)");
     Log::Warn("Hello world! (warn)");
     Log::Error("Hello world! (error)");
     Log::Debug("Hello world! (debug)");
+
+    Mesh mesh(mesh_filepath);
 
     return 0;
 }
@@ -23,6 +26,7 @@ auto main(int argc, char **argv) -> int {
         options->add_options()
             ("h,help", "Print usage message")
             ("v,verbosity", "Logging verbosity level (Debug, Info, Warn, or Error), default is 'Debug'", cxxopts::value<std::string>())
+            ("m,mesh", "Mesh file (*.msh)", cxxopts::value<std::string>())
         ;
         // clang-format on
 
@@ -49,8 +53,13 @@ auto main(int argc, char **argv) -> int {
             }
         }
 
+        std::string mesh_filepath;
+        if (result.count("mesh") == 1) {
+            mesh_filepath = result["mesh"].as<std::string>();
+        }
+
         // Entry point:
-        return plasmatic::Run();
+        return plasmatic::Run(mesh_filepath);
     } catch (const cxxopts::option_not_exists_exception &e) {
         std::cerr << "ERROR: " << e.what() << std::endl;
         std::cout << std::endl;
