@@ -2,7 +2,12 @@
 
 #include <gtest/gtest.h>
 
-TEST(MeshTest, Simple) { EXPECT_TRUE(true); }
+namespace plasmatic {
+TEST(MeshTest, Simple) {
+    auto filename = GetExecutablePath() / "assets/Mesh/mesh.msh";
+    Mesh mesh(filename);
+}
+} // namespace plasmatic
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

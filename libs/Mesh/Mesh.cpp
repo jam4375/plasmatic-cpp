@@ -6,6 +6,7 @@
 namespace plasmatic {
 
 Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std::vector<Coord>>()) {
+    Log::Info("Reading mesh from file '{}'", filename.string());
     std::ifstream in(filename);
 
     std::string line;
