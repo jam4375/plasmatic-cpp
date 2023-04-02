@@ -4,7 +4,7 @@
 
 namespace plasmatic {
 TEST(MeshTest, Simple) {
-    auto filename = GetExecutablePath() / "assets/Mesh/mesh.msh";
+    auto filename = GetExecutablePath() / "assets/Mesh/mesh2d.msh";
     Mesh mesh(filename);
 }
 } // namespace plasmatic
