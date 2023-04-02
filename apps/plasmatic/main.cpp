@@ -10,6 +10,8 @@ static auto Run(const std::string &mesh_filepath) -> int {
     Log::Error("Hello world! (error)");
     Log::Debug("Hello world! (debug)");
 
+    Log::Info("Executable path = {}", GetExecutablePath().string());
+
     Mesh mesh(mesh_filepath);
 
     return 0;

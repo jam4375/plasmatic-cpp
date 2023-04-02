@@ -1,6 +1,6 @@
 # cmake-format: off
 configure_library(NAME Utility
-                  SOURCE_FILES Utility.cpp
+                  SOURCE_FILES Utility.cpp ExecutablePath.cpp
                   SOURCE_DIR "."
                   INTERFACE_DIR "interface"
                   BUILD_LINK_LIBRARIES ""
