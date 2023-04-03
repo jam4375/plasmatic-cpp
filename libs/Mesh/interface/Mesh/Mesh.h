@@ -17,6 +17,8 @@ class Mesh {
   public:
     Mesh(const std::filesystem::path &filename);
 
+    void WriteVTK(const std::filesystem::path &filename) const;
+
     Integer GetNumNodes() const { return static_cast<Integer>(_nodes->size()); }
 
     Integer GetNumElements(Integer dimension) const {
@@ -28,6 +30,9 @@ class Mesh {
     std::array<std::vector<std::shared_ptr<Element>>, 4> _elements;
 
     std::unordered_map<Integer, std::vector<Integer>> _entities;
+
+    std::unordered_map<std::string, std::vector<Float>> _scalarFields;
+    std::unordered_map<std::string, std::vector<std::array<Float, 3>>> _vectorFields;
 };
 
 } // namespace plasmatic

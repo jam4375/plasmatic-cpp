@@ -5,7 +5,7 @@ namespace plasmatic {
 Triangle::Triangle(const std::array<Integer, 3> &node_indices, const std::shared_ptr<std::vector<Coord>> &nodes)
     : _nodeIndices(node_indices), _nodes(nodes) {}
 
-Float Triangle::ShapeFn([[maybe_unused]] Integer index, [[maybe_unused]] const Coord &coord) {
+Float Triangle::ShapeFn([[maybe_unused]] Integer index, [[maybe_unused]] const Coord &coord) const {
     auto x0 = (*_nodes)[static_cast<size_t>(_nodeIndices[0])].x;
     auto y0 = (*_nodes)[static_cast<size_t>(_nodeIndices[0])].y;
     auto x1 = (*_nodes)[static_cast<size_t>(_nodeIndices[1])].x;

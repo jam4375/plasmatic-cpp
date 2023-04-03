@@ -12,7 +12,13 @@ class Element {
   public:
     virtual ~Element();
 
-    virtual Float ShapeFn(Integer index, const Coord &coord) = 0;
+    virtual Integer NumNodes() const = 0;
+
+    virtual Integer VTKCellType() const = 0;
+
+    virtual Float ShapeFn(Integer index, const Coord &coord) const = 0;
+
+    virtual Integer GetNodeInex(Integer index) const = 0;
 
   private:
 };
