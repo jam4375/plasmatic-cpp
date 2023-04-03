@@ -74,7 +74,19 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                 for (Integer jj = 0; jj < elements_in_block; ++jj) {
                     std::getline(in, line);
 
-                    if (element_type == 2) {
+                    if (element_type == 1) {
+                        // 2-node line
+
+                        Integer element_tag = 0;
+                        std::array<Integer, 2> node_indices = {};
+
+                        std::stringstream ss(line);
+                        ss >> element_tag >> node_indices[0] >> node_indices[1];
+
+                        constexpr auto dimension = 1; // 1d
+                        _elements[static_cast<size_t>(dimension)].push_back(
+                            std::make_shared<Line>(node_indices, _nodes));
+                    } else if (element_type == 2) {
                         // 3-node triangle
 
                         Integer element_tag = 0;
@@ -83,7 +95,9 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                         std::stringstream ss(line);
                         ss >> element_tag >> node_indices[0] >> node_indices[1] >> node_indices[2];
 
-                        _elements.push_back(std::make_shared<Triangle>(node_indices, _nodes));
+                        constexpr auto dimension = 2; // 2d
+                        _elements[static_cast<size_t>(dimension)].push_back(
+                            std::make_shared<Triangle>(node_indices, _nodes));
                     }
                 }
             }
@@ -91,7 +105,9 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
     }
 
     Log::Info("Num nodes read = {}", _nodes->size());
-    Log::Info("Num elements read = {}", _elements.size());
+    for (size_t ii = 0; ii < 4; ++ii) {
+        Log::Info("Num elements read = {} (dimension {})", _elements.at(ii).size(), ii);
+    }
 
     in.close();
 }
