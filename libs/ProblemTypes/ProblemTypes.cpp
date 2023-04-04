@@ -38,6 +38,12 @@ void ProblemType::Solve() {
             }
         }
     }
+
+    // Set boundary conditions
+
+    // Solve stiffness matrix/forcing vector equation for temperature
+
+    // Transfer solution to mesh field
 }
 
 } // namespace plasmatic

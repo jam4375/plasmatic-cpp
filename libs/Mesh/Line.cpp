@@ -32,6 +32,8 @@ Float Line::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unused]]
     auto x1 = (*_nodes)[static_cast<size_t>(_nodeIndices[1])].x;
     auto y1 = (*_nodes)[static_cast<size_t>(_nodeIndices[1])].y;
 
+    const auto length = std::sqrt(std::pow(x1 - x0, 2) + std::pow(y1 - y0, 2));
+
     const auto theta = std::atan2(y1 - y0, x1 - x0);
 
     auto sign = 1.0;
@@ -43,14 +45,14 @@ Float Line::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unused]]
 
     if (dimension == 0) {
         if (std::cos(theta) > tol) {
-            return sign / std::cos(theta);
+            return sign / (length * std::cos(theta));
         }
 
         return 0.0;
     }
     if (dimension == 1) {
         if (std::sin(theta) > tol) {
-            return sign / std::sin(theta);
+            return sign / (length * std::sin(theta));
         }
 
         return 0.0;
