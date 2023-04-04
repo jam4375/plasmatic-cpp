@@ -18,7 +18,11 @@ class Line : public Element {
 
     virtual Float ShapeFn(Integer index, const Coord &coord) const override;
 
-    virtual Integer GetNodeInex(Integer index) const override { return _nodeIndices.at(static_cast<size_t>(index)); }
+    virtual Float ShapeFnDerivative(Integer index, Integer dimension, const Coord &coord) const override;
+
+    virtual Integer GetNodeIndex(Integer index) const override { return _nodeIndices.at(static_cast<size_t>(index)); }
+
+    virtual Float Integrate(const std::function<Float(const Coord &)> integrand) const override;
 
   private:
     std::array<Integer, 2> _nodeIndices;

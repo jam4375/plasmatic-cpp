@@ -151,7 +151,7 @@ void Mesh::WriteVTK(const std::filesystem::path &filename) const {
         for (const auto &element : elements) {
             out << element->NumNodes();
             for (Integer jj = 0; jj < element->NumNodes(); ++jj) {
-                out << " " << element->GetNodeInex(jj);
+                out << " " << element->GetNodeIndex(jj);
             }
             out << std::endl;
         }
@@ -166,6 +166,7 @@ void Mesh::WriteVTK(const std::filesystem::path &filename) const {
     }
     out << std::endl;
 
+    out << "POINT_DATA " << _nodes->size() << std::endl;
     for (const auto &[data_name, values] : _scalarFields) {
         out << "SCALARS " << data_name << " double" << std::endl;
         out << "LOOKUP_TABLE default" << std::endl;
@@ -185,6 +186,14 @@ void Mesh::WriteVTK(const std::filesystem::path &filename) const {
     }
 
     out.close();
+}
+
+void Mesh::AddScalarField(const std::string &field_name) {
+    _scalarFields.insert({field_name, std::vector<Float>(_nodes->size())});
+}
+
+void Mesh::AddVectorField(const std::string &field_name) {
+    _vectorFields.insert({field_name, std::vector<std::array<Float, 3>>(_nodes->size())});
 }
 
 } // namespace plasmatic

@@ -25,6 +25,14 @@ class Mesh {
         return static_cast<Integer>(_elements.at(static_cast<size_t>(dimension)).size());
     }
 
+    void AddScalarField(const std::string &field_name);
+
+    void AddVectorField(const std::string &field_name);
+
+    std::shared_ptr<Element> GetElement(Integer dimension, Integer element_id) {
+        return _elements.at(static_cast<size_t>(dimension))[static_cast<size_t>(element_id)];
+    }
+
   private:
     std::shared_ptr<std::vector<Coord>> _nodes;
     std::array<std::vector<std::shared_ptr<Element>>, 4> _elements;

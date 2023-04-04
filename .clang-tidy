@@ -1,5 +1,5 @@
 ---
-Checks:          'clang-diagnostic-*,clang-analyzer-*,*,-llvmlibc-restrict-system-libc-headers,-llvmlibc-*,-fuchsia-*,-misc-use-anonymous-namespace,-modernize-use-trailing-return-type,-bugprone-easily-swappable-parameters,-misc-const-correctness,-readability-identifier-length,-altera-*,-readability-function-cognitive-complexity'
+Checks:          'clang-diagnostic-*,clang-analyzer-*,*,-llvmlibc-restrict-system-libc-headers,-llvmlibc-*,-fuchsia-*,-misc-use-anonymous-namespace,-modernize-use-trailing-return-type,-bugprone-easily-swappable-parameters,-misc-const-correctness,-readability-identifier-length,-altera-*,-readability-function-cognitive-complexity,-clang-diagnostic-pre-c++20-*'
 WarningsAsErrors: '*'
 HeaderFilterRegex: '^((?!/include/gtest/|/cocos/scripting/).)*$'
 AnalyzeTemporaryDtors: false
@@ -157,9 +157,9 @@ CheckOptions:
   - key:             cppcoreguidelines-avoid-magic-numbers.IgnorePowersOf2IntegerValues
     value:           'false'
   - key:             cppcoreguidelines-avoid-magic-numbers.IgnoredFloatingPointValues
-    value:           '1.0;100.0;'
+    value:           '0.5;1.0;100.0;2.0;3.0;4.0;5.0;6.0;7.0;8.0;9.0;10.0;'
   - key:             cppcoreguidelines-avoid-magic-numbers.IgnoredIntegerValues
-    value:           '1;2;3;4;'
+    value:           '1;2;3;4;5;6;7;8;9;10'
   - key:             cppcoreguidelines-explicit-virtual-functions.AllowOverrideAndFinal
     value:           'false'
   - key:             cppcoreguidelines-explicit-virtual-functions.FinalSpelling
@@ -501,9 +501,9 @@ CheckOptions:
   - key:             readability-magic-numbers.IgnorePowersOf2IntegerValues
     value:           'false'
   - key:             readability-magic-numbers.IgnoredFloatingPointValues
-    value:           '1.0;100.0;'
+    value:           '0.5;1.0;100.0;2.0;3.0;4.0;5.0;6.0;7.0;8.0;9.0;10.0;'
   - key:             readability-magic-numbers.IgnoredIntegerValues
-    value:           '1;2;3;4;'
+    value:           '1;2;3;4;5;6;7;8;9;10;'
   - key:             readability-qualified-auto.AddConstToQualified
     value:           'true'
   - key:             readability-redundant-declaration.IgnoreMacros
