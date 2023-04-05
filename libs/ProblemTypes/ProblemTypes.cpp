@@ -39,16 +39,25 @@ void ProblemType::Solve() {
             }
         }
     }
+    stiffness.Assemble();
 
     // Set boundary conditions
-    temperature_vec_bcs.SetValue(0, 100.0);
-    temperature_vec_bcs.SetValue(400, 20.0); // NOLINT(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+    constexpr auto bc1_value = 100.0;
+    constexpr auto bc2_value = -100.0;
 
-    stiffness.Assemble();
-    stiffness.SetDirichletBC(0, temperature_vec_bcs, forcing);
-    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
-    stiffness.SetDirichletBC(400, temperature_vec_bcs, forcing);
+    auto bc1_node_inds = _mesh.GetNodeEntity(2);
+    for (auto node_ind : bc1_node_inds) {
+        temperature_vec_bcs.SetValue(node_ind, bc1_value);
 
+        stiffness.SetDirichletBC(node_ind, temperature_vec_bcs, forcing);
+    }
+
+    auto bc2_node_inds = _mesh.GetNodeEntity(3);
+    for (auto node_ind : bc2_node_inds) {
+        temperature_vec_bcs.SetValue(node_ind, bc2_value);
+
+        stiffness.SetDirichletBC(node_ind, temperature_vec_bcs, forcing);
+    }
     stiffness.Assemble();
     forcing.Assemble();
 

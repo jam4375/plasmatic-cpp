@@ -44,7 +44,7 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                     std::stringstream ss(line);
                     ss >> coord.x >> coord.y >> coord.z;
 
-                    _entities[entity_tag].push_back(static_cast<Integer>(_nodes->size()));
+                    _nodeEntities[entity_tag].push_back(static_cast<Integer>(_nodes->size()));
                     _nodes->push_back(coord);
                 }
             }
@@ -87,6 +87,7 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                         std::array<Integer, 2> node_indices = {ind1 - 1, ind2 - 1};
 
                         constexpr auto dimension = 1; // 1d
+                        _elementEntities[entity_tag].push_back(static_cast<Integer>(_elements.size()));
                         _elements[static_cast<size_t>(dimension)].push_back(
                             std::make_shared<Line>(node_indices, _nodes));
                     } else if (element_type == 2) {
@@ -103,6 +104,7 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                         std::array<Integer, 3> node_indices = {ind1 - 1, ind2 - 1, ind3 - 1};
 
                         constexpr auto dimension = 2; // 2d
+                        _elementEntities[entity_tag].push_back(static_cast<Integer>(_elements.size()));
                         _elements[static_cast<size_t>(dimension)].push_back(
                             std::make_shared<Triangle>(node_indices, _nodes));
                     }

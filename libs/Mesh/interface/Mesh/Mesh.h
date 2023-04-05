@@ -37,11 +37,16 @@ class Mesh {
 
     void VectorFieldSetValue(const std::string &field_name, Integer index, std::array<Float, 3> value);
 
+    const std::vector<Integer> &GetNodeEntity(Integer entity_id) const { return _nodeEntities.at(entity_id); }
+
+    const std::vector<Integer> &GetElementEntity(Integer entity_id) const { return _elementEntities.at(entity_id); }
+
   private:
     std::shared_ptr<std::vector<Coord>> _nodes;
     std::array<std::vector<std::shared_ptr<Element>>, 4> _elements;
 
-    std::unordered_map<Integer, std::vector<Integer>> _entities;
+    std::unordered_map<Integer, std::vector<Integer>> _elementEntities;
+    std::unordered_map<Integer, std::vector<Integer>> _nodeEntities;
 
     std::unordered_map<std::string, std::vector<Float>> _scalarFields;
     std::unordered_map<std::string, std::vector<std::array<Float, 3>>> _vectorFields;
