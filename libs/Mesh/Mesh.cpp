@@ -196,4 +196,12 @@ void Mesh::AddVectorField(const std::string &field_name) {
     _vectorFields.insert({field_name, std::vector<std::array<Float, 3>>(_nodes->size())});
 }
 
+void Mesh::ScalarFieldSetValue(const std::string &field_name, Integer index, Float value) {
+    _scalarFields.at(field_name)[static_cast<size_t>(index)] = value;
+}
+
+void Mesh::VectorFieldSetValue(const std::string &field_name, Integer index, std::array<Float, 3> value) {
+    _vectorFields.at(field_name)[static_cast<size_t>(index)] = value;
+}
+
 } // namespace plasmatic

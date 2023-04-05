@@ -27,6 +27,11 @@ Vector::Vector(const Vector &other) {
     Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
 }
 
+Vector::~Vector() {
+    const PetscErrorCode ierr = VecDestroy(&_data);
+    Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
+}
+
 Integer Vector::Size() const {
     Integer size = 0;
     const PetscErrorCode ierr = VecGetSize(_data, &size);

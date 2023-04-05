@@ -33,6 +33,10 @@ class Mesh {
         return _elements.at(static_cast<size_t>(dimension))[static_cast<size_t>(element_id)];
     }
 
+    void ScalarFieldSetValue(const std::string &field_name, Integer index, Float value);
+
+    void VectorFieldSetValue(const std::string &field_name, Integer index, std::array<Float, 3> value);
+
   private:
     std::shared_ptr<std::vector<Coord>> _nodes;
     std::array<std::vector<std::shared_ptr<Element>>, 4> _elements;

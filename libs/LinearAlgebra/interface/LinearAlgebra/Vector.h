@@ -12,6 +12,8 @@ class Vector {
 
     Vector(const Vector &other);
 
+    ~Vector();
+
     Integer Size() const;
 
     void AddValue(Integer pos, Float value);

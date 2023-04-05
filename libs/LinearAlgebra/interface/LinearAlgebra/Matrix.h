@@ -14,6 +14,8 @@ class Matrix {
 
     Matrix(const Matrix &other);
 
+    ~Matrix();
+
     Integer Rows() const;
 
     Integer Cols() const;
@@ -37,6 +39,8 @@ class Matrix {
     Vector operator*(const Vector &other);
 
     Vector Solve(const Vector &other);
+
+    void SetDirichletBC(Integer row_col, const Vector &x, const Vector &b);
 
   private:
     Mat _data;

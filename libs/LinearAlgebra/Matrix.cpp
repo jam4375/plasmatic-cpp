@@ -26,6 +26,11 @@ Matrix::Matrix(const Matrix &other) {
     Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
 }
 
+Matrix::~Matrix() {
+    const PetscErrorCode ierr = MatDestroy(&_data);
+    Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
+}
+
 Integer Matrix::Rows() const {
     Integer rows = 0;
     Integer cols = 0;
@@ -131,7 +136,15 @@ Vector Matrix::Solve(const Vector &other) {
     ierr = KSPSolve(ksp, other._data, result._data);
     Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
 
+    ierr = KSPDestroy(&ksp);
+    Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
+
     return result;
+}
+
+void Matrix::SetDirichletBC(Integer row_col, const Vector &x, const Vector &b) {
+    const PetscErrorCode ierr = MatZeroRowsColumns(_data, 1, &row_col, 1.0, x._data, b._data);
+    Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
 }
 
 } // namespace plasmatic
