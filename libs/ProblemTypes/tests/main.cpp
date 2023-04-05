@@ -6,7 +6,7 @@
 namespace plasmatic {
 
 TEST(ProblemTypesTest, Simple) {
-    auto filename = GetExecutablePath() / "assets/Mesh/mesh2d.msh";
+    auto filename = GetExecutablePath() / "assets/ProblemTypes/mesh2d.msh";
 
     ProblemType problem(filename);
 

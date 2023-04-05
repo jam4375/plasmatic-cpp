@@ -45,18 +45,34 @@ void ProblemType::Solve() {
     constexpr auto bc1_value = 100.0;
     constexpr auto bc2_value = -100.0;
 
-    auto bc1_node_inds = _mesh.GetNodeEntity(2);
-    for (auto node_ind : bc1_node_inds) {
-        temperature_vec_bcs.SetValue(node_ind, bc1_value);
+    constexpr auto bc_dimension = 1;
 
-        stiffness.SetDirichletBC(node_ind, temperature_vec_bcs, forcing);
+    auto element_entities1 = _mesh.GetPhysicalEntity("physical_curve_1", bc_dimension);
+    for (const auto &element_entity : element_entities1) {
+        auto element_inds = _mesh.GetEntity(bc_dimension, element_entity);
+        for (const auto &element_ind : element_inds) {
+            auto element = _mesh.GetElement(bc_dimension, element_ind);
+            for (Integer ii = 0; ii < element->NumNodes(); ++ii) {
+                auto node_ind = element->GetNodeIndex(ii);
+                temperature_vec_bcs.SetValue(node_ind, bc1_value);
+
+                stiffness.SetDirichletBC(node_ind, temperature_vec_bcs, forcing);
+            }
+        }
     }
 
-    auto bc2_node_inds = _mesh.GetNodeEntity(3);
-    for (auto node_ind : bc2_node_inds) {
-        temperature_vec_bcs.SetValue(node_ind, bc2_value);
+    auto element_entities2 = _mesh.GetPhysicalEntity("physical_curve_2", bc_dimension);
+    for (const auto &element_entity : element_entities2) {
+        auto element_inds = _mesh.GetEntity(bc_dimension, element_entity);
+        for (const auto &element_ind : element_inds) {
+            auto element = _mesh.GetElement(bc_dimension, element_ind);
+            for (Integer ii = 0; ii < element->NumNodes(); ++ii) {
+                auto node_ind = element->GetNodeIndex(ii);
+                temperature_vec_bcs.SetValue(node_ind, bc2_value);
 
-        stiffness.SetDirichletBC(node_ind, temperature_vec_bcs, forcing);
+                stiffness.SetDirichletBC(node_ind, temperature_vec_bcs, forcing);
+            }
+        }
     }
     stiffness.Assemble();
     forcing.Assemble();

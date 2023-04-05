@@ -11,7 +11,136 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
 
     std::string line;
 
+    // Maps physical tags to physical names
+    std::unordered_map<Integer, std::string> physical_tags;
+
     while (std::getline(in, line)) {
+
+        if (line == "$PhysicalNames") {
+            Integer num_physical_entities = 0;
+
+            {
+                std::getline(in, line);
+                std::stringstream ss(line);
+                ss >> num_physical_entities;
+            }
+
+            for (Integer ii = 0; ii < num_physical_entities; ++ii) {
+                Integer physical_dim = 0;
+                Integer physical_tag = 0;
+                std::string name;
+                {
+                    std::getline(in, line);
+                    std::stringstream ss(line);
+                    ss >> physical_dim >> physical_tag >> name;
+                }
+
+                // Remove leading and trailing quotes:
+                name.erase(0, 1);
+                name.erase(name.size() - 1);
+
+                physical_tags.insert({physical_tag, name});
+            }
+        }
+
+        if (line == "$Entities") {
+            Integer num_points = 0;
+            Integer num_curves = 0;
+            Integer num_surfaces = 0;
+            Integer num_volumes = 0;
+
+            {
+                std::getline(in, line);
+                std::stringstream ss(line);
+                ss >> num_points >> num_curves >> num_surfaces >> num_volumes;
+            }
+
+            for (Integer ii = 0; ii < num_points; ++ii) {
+                Integer point_tag = 0;
+                Float x = 0;
+                Float y = 0;
+                Float z = 0;
+                Integer num_physical_tags = 0;
+
+                std::getline(in, line);
+                std::stringstream ss(line);
+                ss >> point_tag >> x >> y >> z >> num_physical_tags;
+
+                for (Integer jj = 0; jj < num_physical_tags; ++jj) {
+                    Integer physical_tag = 0;
+                    ss >> physical_tag;
+
+                    _physicalEntities[physical_tags.at(physical_tag)][0].push_back(point_tag);
+                }
+            }
+
+            for (Integer ii = 0; ii < num_curves; ++ii) {
+                Integer curve_tag = 0;
+                Float min_x = 0;
+                Float min_y = 0;
+                Float min_z = 0;
+                Float max_x = 0;
+                Float max_y = 0;
+                Float max_z = 0;
+                Integer num_physical_tags = 0;
+
+                std::getline(in, line);
+                std::stringstream ss(line);
+                ss >> curve_tag >> min_x >> min_y >> min_z >> max_x >> max_y >> max_z >> num_physical_tags;
+
+                for (Integer jj = 0; jj < num_physical_tags; ++jj) {
+                    Integer physical_tag = 0;
+                    ss >> physical_tag;
+
+                    _physicalEntities[physical_tags.at(physical_tag)][1].push_back(curve_tag);
+                }
+            }
+
+            for (Integer ii = 0; ii < num_surfaces; ++ii) {
+                Integer surface_tag = 0;
+                Float min_x = 0;
+                Float min_y = 0;
+                Float min_z = 0;
+                Float max_x = 0;
+                Float max_y = 0;
+                Float max_z = 0;
+                Integer num_physical_tags = 0;
+
+                std::getline(in, line);
+                std::stringstream ss(line);
+                ss >> surface_tag >> min_x >> min_y >> min_z >> max_x >> max_y >> max_z >> num_physical_tags;
+
+                for (Integer jj = 0; jj < num_physical_tags; ++jj) {
+                    Integer physical_tag = 0;
+                    ss >> physical_tag;
+
+                    _physicalEntities[physical_tags.at(physical_tag)][2].push_back(surface_tag);
+                }
+            }
+
+            for (Integer ii = 0; ii < num_volumes; ++ii) {
+                Integer volume_tag = 0;
+                Float min_x = 0;
+                Float min_y = 0;
+                Float min_z = 0;
+                Float max_x = 0;
+                Float max_y = 0;
+                Float max_z = 0;
+                Integer num_physical_tags = 0;
+
+                std::getline(in, line);
+                std::stringstream ss(line);
+                ss >> volume_tag >> min_x >> min_y >> min_z >> max_x >> max_y >> max_z >> num_physical_tags;
+
+                for (Integer jj = 0; jj < num_physical_tags; ++jj) {
+                    Integer physical_tag = 0;
+                    ss >> physical_tag;
+
+                    _physicalEntities[physical_tags.at(physical_tag)][3].push_back(volume_tag);
+                }
+            }
+        }
+
         if (line == "$Nodes") {
             Integer num_entity_blocks = 0;
             Integer num_nodes = 0;
@@ -44,7 +173,10 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                     std::stringstream ss(line);
                     ss >> coord.x >> coord.y >> coord.z;
 
-                    _nodeEntities[entity_tag].push_back(static_cast<Integer>(_nodes->size()));
+                    constexpr auto dimension = 0; // 0d
+
+                    _entities[entity_tag][static_cast<size_t>(dimension)].push_back(
+                        static_cast<Integer>(_nodes->size()));
                     _nodes->push_back(coord);
                 }
             }
@@ -87,7 +219,8 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                         std::array<Integer, 2> node_indices = {ind1 - 1, ind2 - 1};
 
                         constexpr auto dimension = 1; // 1d
-                        _elementEntities[entity_tag].push_back(static_cast<Integer>(_elements.size()));
+                        _entities[entity_tag][static_cast<size_t>(dimension)].push_back(
+                            static_cast<Integer>(_elements[static_cast<size_t>(dimension)].size()));
                         _elements[static_cast<size_t>(dimension)].push_back(
                             std::make_shared<Line>(node_indices, _nodes));
                     } else if (element_type == 2) {
@@ -104,7 +237,8 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                         std::array<Integer, 3> node_indices = {ind1 - 1, ind2 - 1, ind3 - 1};
 
                         constexpr auto dimension = 2; // 2d
-                        _elementEntities[entity_tag].push_back(static_cast<Integer>(_elements.size()));
+                        _entities[entity_tag][static_cast<size_t>(dimension)].push_back(
+                            static_cast<Integer>(_elements[static_cast<size_t>(dimension)].size()));
                         _elements[static_cast<size_t>(dimension)].push_back(
                             std::make_shared<Triangle>(node_indices, _nodes));
                     }

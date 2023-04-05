@@ -5,4 +5,4 @@ configure_test_executable(NAME ProblemTypesTest
                           BUILD_LINK_LIBRARIES ${PROJECT_NAME}::ProblemTypes)
 # cmake-format: on
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets/ DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/Mesh)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets/ DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets/ProblemTypes)
