@@ -1,14 +1,17 @@
-#include "ProblemTypes/ProblemTypes.h"
 #include "LinearAlgebra/LinearAlgebra.h"
+#include "ProblemTypes/ProblemTypes.h"
 
 #include <gtest/gtest.h>
 
 namespace plasmatic {
 
-TEST(ProblemTypesTest, Simple) {
-    auto filename = GetExecutablePath() / "assets/ProblemTypes/mesh2d.msh";
+TEST(ProblemTypesTest, HeatEq2D) {
+    HeatEq2D::Input input = {.mesh_filename = GetExecutablePath() / "assets/ProblemTypes/mesh2d.msh",
+                             .thermal_conductivity = 1.0,
+                             .dirichlet_bcs = {{"physical_curve_1", 100.0}},
+                             .neumann_bcs = {{"physical_curve_2", -100.0}}};
 
-    ProblemType problem(filename);
+    HeatEq2D problem(input);
 
     problem.Solve();
 

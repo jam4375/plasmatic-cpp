@@ -1,6 +1,6 @@
 # cmake-format: off
 configure_library(NAME ProblemTypes
-                  SOURCE_FILES ProblemTypes.cpp
+                  SOURCE_FILES HeatEq2D.cpp
                   SOURCE_DIR "."
                   INTERFACE_DIR "interface"
                   BUILD_LINK_LIBRARIES
