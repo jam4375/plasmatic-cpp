@@ -2,6 +2,7 @@
 
 #include "Element.h"
 #include "Line.h"
+#include "Tetrahedron.h"
 #include "Triangle.h"
 
 #include "Utility/Utility.h"

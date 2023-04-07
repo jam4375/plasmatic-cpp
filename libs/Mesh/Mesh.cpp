@@ -241,6 +241,25 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                             static_cast<Integer>(_elements[static_cast<size_t>(dimension)].size()));
                         _elements[static_cast<size_t>(dimension)].push_back(
                             std::make_shared<Triangle>(node_indices, _nodes));
+                    } else if (element_type == 4) {
+                        // 4-node tetrahedron
+
+                        Integer element_tag = 0;
+                        Integer ind1 = 0;
+                        Integer ind2 = 0;
+                        Integer ind3 = 0;
+                        Integer ind4 = 0;
+
+                        std::stringstream ss(line);
+                        ss >> element_tag >> ind1 >> ind2 >> ind3 >> ind4;
+
+                        std::array<Integer, 4> node_indices = {ind1 - 1, ind2 - 1, ind3 - 1, ind4 - 1};
+
+                        constexpr auto dimension = 3; // 3d
+                        _entities[entity_tag][static_cast<size_t>(dimension)].push_back(
+                            static_cast<Integer>(_elements[static_cast<size_t>(dimension)].size()));
+                        _elements[static_cast<size_t>(dimension)].push_back(
+                            std::make_shared<Tetrahedron>(node_indices, _nodes));
                     }
                 }
             }
