@@ -16,6 +16,10 @@ class Line : public Element {
 
     virtual Integer VTKCellType() const override { return 3; }
 
+    Float ShapeFn(Integer index, Float xi) const;
+
+    Float ShapeFnDerivative(Integer index, Integer dimension, Float xi) const;
+
     virtual Float ShapeFn(Integer index, const Coord &coord) const override;
 
     virtual Float ShapeFnDerivative(Integer index, Integer dimension, const Coord &coord) const override;
