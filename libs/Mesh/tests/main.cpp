@@ -54,6 +54,28 @@ TEST(MeshTest, Tetrahedron) {
 
     EXPECT_DOUBLE_EQ(tet.Integrate([](const Coord &) -> Float { return 1.0; }), 1.0 / 6.0);
 }
+
+TEST(MeshTest, TetrahedronShapeFnDerivatives) {
+    auto nodes = std::make_shared<std::vector<Coord>>();
+
+    nodes->push_back({.x = 0.0, .y = 0.0, .z = 0.0});
+    nodes->push_back({.x = 1.0, .y = 0.0, .z = 0.0});
+    nodes->push_back({.x = 0.0, .y = 1.0, .z = 0.0});
+    nodes->push_back({.x = 0.0, .y = 0.0, .z = 1.0});
+
+    for (Integer ii = 0; ii < 4; ++ii) {
+        Tetrahedron tet({(0 + ii) % 4, (1 + ii) % 4, (2 + ii) % 4, (3 + ii) % 4}, nodes);
+
+        EXPECT_DOUBLE_EQ(tet.ShapeFnDerivative((4 - ii) % 4, 0, {.x = 0.0, .y = 0.0, .z = 0.0}), -1.0) << "ii = " << ii;
+        EXPECT_DOUBLE_EQ(tet.ShapeFnDerivative((4 - ii) % 4, 1, {.x = 0.0, .y = 0.0, .z = 0.0}), -1.0) << "ii = " << ii;
+        EXPECT_DOUBLE_EQ(tet.ShapeFnDerivative((4 - ii) % 4, 2, {.x = 0.0, .y = 0.0, .z = 0.0}), -1.0) << "ii = " << ii;
+
+        EXPECT_DOUBLE_EQ(tet.ShapeFnDerivative((5 - ii) % 4, 0, {.x = 1.0, .y = 0.0, .z = 0.0}), 1.0) << "ii = " << ii;
+        EXPECT_DOUBLE_EQ(tet.ShapeFnDerivative((6 - ii) % 4, 1, {.x = 0.0, .y = 1.0, .z = 0.0}), 1.0) << "ii = " << ii;
+        EXPECT_DOUBLE_EQ(tet.ShapeFnDerivative((7 - ii) % 4, 2, {.x = 0.0, .y = 0.0, .z = 1.0}), 1.0) << "ii = " << ii;
+    }
+}
+
 } // namespace plasmatic
 
 int main(int argc, char **argv) {

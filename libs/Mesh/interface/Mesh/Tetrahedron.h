@@ -26,6 +26,8 @@ class Tetrahedron : public Element {
 
     static Float ComputeVolume(const Coord &p0, const Coord &p1, const Coord &p2, const Coord &p3);
 
+    static Float ComputeVolumeDerivative(const Coord &p0, const Coord &p1, const Coord &p2, Integer dimension);
+
   private:
     std::array<Integer, 4> _nodeIndices;
     std::shared_ptr<std::vector<Coord>> _nodes;
