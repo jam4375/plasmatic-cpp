@@ -1,5 +1,7 @@
 #include "interface/Mesh/Line.h"
 
+#include <Eigen/Dense>
+
 namespace plasmatic {
 
 Line::Line(const std::array<Integer, 2> &node_indices, const std::shared_ptr<std::vector<Coord>> &nodes)
@@ -62,25 +64,23 @@ Float Line::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unused]]
     const auto xi =
         std::sqrt(std::pow(coord.x - x0, 2) + std::pow(coord.y - y0, 2) + std::pow(coord.z - z0, 2)) / length;
 
-    const auto theta = std::atan2(y1 - y0, x1 - x0);
+    Eigen::MatrixXd jacobian = Eigen::MatrixXd::Zero(1, 3);
 
-    constexpr auto tol = 1.0e-10;
-
-    if (dimension == 0) {
-        if (std::cos(theta) > tol) {
-            return 1.0 / (length * std::cos(theta)) * ShapeFnDerivative(index, 0, xi);
-        }
-
-        return 0.0;
+    for (size_t ii = 0; ii < 2; ++ii) {
+        jacobian(0, 0) += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].x * ShapeFnDerivative(index, 0, xi);
+        jacobian(0, 1) += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].y * ShapeFnDerivative(index, 0, xi);
+        jacobian(0, 2) += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].z * ShapeFnDerivative(index, 0, xi);
     }
-    if (dimension == 1) {
-        if (std::sin(theta) > tol) {
-            return 1.0 / (length * std::sin(theta)) * ShapeFnDerivative(index, 0, xi);
-        }
 
-        return 0.0;
-    }
-    Abort("Invalid shape function derivative dimension: {}", dimension);
+    Eigen::VectorXd shape_fn_derivs = Eigen::VectorXd::Zero(1);
+
+    shape_fn_derivs(0) = ShapeFnDerivative(index, 0, xi);
+
+    Eigen::VectorXd global_derivs = jacobian.bdcSvd().solve(shape_fn_derivs);
+
+    Check(dimension >= 0 && dimension <= 3, "Invalid shape function derivative dimension: {}", dimension);
+
+    return global_derivs(dimension);
 }
 
 Float Line::Integrate(const std::function<Float(const Coord &)> integrand) const {

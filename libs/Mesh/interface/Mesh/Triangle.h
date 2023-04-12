@@ -18,11 +18,17 @@ class Triangle : public Element {
 
     virtual Float ShapeFn(Integer index, const Coord &coord) const override;
 
+    Float ShapeFnDerivative(Integer index, Integer dimension, Float lambda1, Float lambda2) const;
+
     virtual Float ShapeFnDerivative(Integer index, Integer dimension, const Coord &coord) const override;
 
     virtual Integer GetNodeIndex(Integer index) const override { return _nodeIndices.at(static_cast<size_t>(index)); }
 
     virtual Float Integrate(const std::function<Float(const Coord &)> integrand) const override;
+
+    static Float ComputeArea(const Coord &p1, const Coord &p2, const Coord &p3);
+
+    std::array<Float, 3> PhysicalToParentCoords(const Coord &coord) const;
 
   private:
     std::array<Integer, 3> _nodeIndices;
