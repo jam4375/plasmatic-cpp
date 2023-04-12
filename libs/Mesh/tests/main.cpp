@@ -14,6 +14,64 @@ TEST(MeshTest, Simple) {
     mesh.WriteVTK("mesh2d.vtk");
 }
 
+TEST(MeshTest, Triangle) {
+    auto nodes = std::make_shared<std::vector<Coord>>();
+
+    nodes->push_back({.x = 0.0, .y = 0.0, .z = 0.0});
+    nodes->push_back({.x = 1.0, .y = 0.0, .z = 0.0});
+    nodes->push_back({.x = 0.0, .y = 1.0, .z = 0.0});
+
+    Triangle tri({0, 1, 2}, nodes);
+
+    for (Integer ii = 0; ii < 3; ++ii) {
+        EXPECT_DOUBLE_EQ(tri.ShapeFn(ii, (*nodes)[static_cast<size_t>(ii)]), 1.0) << ", ii = " << ii;
+
+        for (Integer jj = 0; jj < 3; ++jj) {
+            if (ii == jj) {
+                continue;
+            }
+
+            EXPECT_DOUBLE_EQ(tri.ShapeFn(ii, (*nodes)[static_cast<size_t>(jj)]), 0.0)
+                << ", ii = " << ii << ", jj = " << jj;
+        }
+    }
+
+    for (Integer ii = 0; ii < 3; ++ii) {
+        auto sum = 0.0;
+        sum += tri.ShapeFn(ii, (*nodes)[static_cast<size_t>(ii)]);
+
+        for (Integer jj = 0; jj < 3; ++jj) {
+            if (ii == jj) {
+                continue;
+            }
+
+            sum += tri.ShapeFn(jj, (*nodes)[static_cast<size_t>(ii)]);
+        }
+
+        EXPECT_DOUBLE_EQ(sum, 1.0) << ", ii = " << ii;
+    }
+
+    EXPECT_DOUBLE_EQ(tri.Integrate([](const Coord &) -> Float { return 1.0; }), 1.0 / 2.0);
+}
+
+TEST(MeshTest, TriangleShapeFnDerivatives) {
+    auto nodes = std::make_shared<std::vector<Coord>>();
+
+    nodes->push_back({.x = 0.0, .y = 0.0, .z = 0.0});
+    nodes->push_back({.x = 1.0, .y = 0.0, .z = 0.0});
+    nodes->push_back({.x = 0.0, .y = 1.0, .z = 0.0});
+
+    for (Integer ii = 0; ii < 3; ++ii) {
+        Triangle tri({(0 + ii) % 3, (1 + ii) % 3, (2 + ii) % 3}, nodes);
+
+        EXPECT_DOUBLE_EQ(tri.ShapeFnDerivative((3 - ii) % 3, 0, {.x = 0.0, .y = 0.0, .z = 0.0}), -1.0) << "ii = " << ii;
+        EXPECT_DOUBLE_EQ(tri.ShapeFnDerivative((3 - ii) % 3, 1, {.x = 0.0, .y = 0.0, .z = 0.0}), -1.0) << "ii = " << ii;
+
+        EXPECT_DOUBLE_EQ(tri.ShapeFnDerivative((4 - ii) % 3, 0, {.x = 1.0, .y = 0.0, .z = 0.0}), 1.0) << "ii = " << ii;
+        EXPECT_DOUBLE_EQ(tri.ShapeFnDerivative((5 - ii) % 3, 1, {.x = 0.0, .y = 1.0, .z = 0.0}), 1.0) << "ii = " << ii;
+    }
+}
+
 TEST(MeshTest, Tetrahedron) {
     auto nodes = std::make_shared<std::vector<Coord>>();
 

@@ -3,7 +3,7 @@ configure_library(NAME Mesh
                   SOURCE_FILES Mesh.cpp Element.cpp Triangle.cpp Line.cpp Tetrahedron.cpp
                   SOURCE_DIR "."
                   INTERFACE_DIR "interface"
-                  BUILD_LINK_LIBRARIES ""
+                  BUILD_LINK_LIBRARIES Eigen3::Eigen
                   INTERFACE_LINK_LIBRARIES ${PROJECT_NAME}::Utility)
 # cmake-format: on
 
