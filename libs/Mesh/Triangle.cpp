@@ -48,6 +48,10 @@ Float Triangle::ShapeFn([[maybe_unused]] Integer index, [[maybe_unused]] const C
 Float Triangle::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unused]] Float lambda1,
                                   [[maybe_unused]] Float lambda2) const {
     if (index == 0) {
+        return -1.0;
+    }
+
+    if (index == 1) {
         if (dimension == 0) {
             return 1.0;
         }
@@ -55,16 +59,12 @@ Float Triangle::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unus
         return 0.0;
     }
 
-    if (index == 1) {
+    if (index == 2) {
         if (dimension == 1) {
             return 1.0;
         }
 
         return 0.0;
-    }
-
-    if (index == 2) {
-        return -1.0;
     }
 
     Abort("Invalid index in ShapeFnDerivative");
@@ -78,11 +78,9 @@ Float Triangle::ShapeFnDerivative(Integer index, Integer dimension, const Coord 
     for (size_t ii = 0; ii < 3; ++ii) {
         for (Integer jj = 0; jj < 2; ++jj) {
             jacobian(jj, 0) += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].x *
-                               ShapeFnDerivative(index, jj, parent_coords[0], parent_coords[1]);
+                               ShapeFnDerivative(static_cast<Integer>(ii), jj, parent_coords[0], parent_coords[1]);
             jacobian(jj, 1) += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].y *
-                               ShapeFnDerivative(index, jj, parent_coords[0], parent_coords[1]);
-            // jacobian(jj, 2) += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].z *
-            //                     ShapeFnDerivative(index, jj, parent_coords[0], parent_coords[1]);
+                               ShapeFnDerivative(static_cast<Integer>(ii), jj, parent_coords[0], parent_coords[1]);
         }
     }
 

@@ -67,9 +67,12 @@ Float Line::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unused]]
     Eigen::MatrixXd jacobian = Eigen::MatrixXd::Zero(1, 3);
 
     for (size_t ii = 0; ii < 2; ++ii) {
-        jacobian(0, 0) += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].x * ShapeFnDerivative(index, 0, xi);
-        jacobian(0, 1) += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].y * ShapeFnDerivative(index, 0, xi);
-        jacobian(0, 2) += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].z * ShapeFnDerivative(index, 0, xi);
+        jacobian(0, 0) +=
+            (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].x * ShapeFnDerivative(static_cast<Integer>(ii), 0, xi);
+        jacobian(0, 1) +=
+            (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].y * ShapeFnDerivative(static_cast<Integer>(ii), 0, xi);
+        jacobian(0, 2) +=
+            (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].z * ShapeFnDerivative(static_cast<Integer>(ii), 0, xi);
     }
 
     Eigen::VectorXd shape_fn_derivs = Eigen::VectorXd::Zero(1);
