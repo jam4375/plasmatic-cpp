@@ -20,14 +20,11 @@ Float Triangle::ComputeArea(const Coord &p1, const Coord &p2, const Coord &p3) {
                            std::pow(x12 * y13 - y12 * x13, 2));
 }
 
-std::array<Float, 3> Triangle::PhysicalToParentCoords(const Coord &coord) const {
+std::array<Float, 2> Triangle::PhysicalToParentCoords(const Coord &coord) const {
     auto area = Triangle::ComputeArea((*_nodes)[static_cast<size_t>(_nodeIndices[0])],
                                       (*_nodes)[static_cast<size_t>(_nodeIndices[1])],
                                       (*_nodes)[static_cast<size_t>(_nodeIndices[2])]);
 
-    auto lambda1 = Triangle::ComputeArea(coord, (*_nodes)[static_cast<size_t>(_nodeIndices[1])],
-                                         (*_nodes)[static_cast<size_t>(_nodeIndices[2])]) /
-                   area;
     auto lambda2 = Triangle::ComputeArea(coord, (*_nodes)[static_cast<size_t>(_nodeIndices[0])],
                                          (*_nodes)[static_cast<size_t>(_nodeIndices[2])]) /
                    area;
@@ -35,18 +32,55 @@ std::array<Float, 3> Triangle::PhysicalToParentCoords(const Coord &coord) const 
                                          (*_nodes)[static_cast<size_t>(_nodeIndices[1])]) /
                    area;
 
-    return {lambda1, lambda2, lambda3};
+    return {lambda2, lambda3};
+}
+
+Coord Triangle::ParentToPhysicalCoords(const std::array<Float, 2> &parent_coords) const {
+    std::array<Float, 3> lambda = {0.0};
+
+    lambda[0] = 1.0 - parent_coords[0] - parent_coords[1];
+    lambda[1] = parent_coords[0];
+    lambda[2] = parent_coords[1];
+
+    // NOLINTNEXTLINE(clang-diagnostic-pre-c++20-compat-pedantic)
+    Coord point = {.x = 0.0, .y = 0.0, .z = 0.0};
+    for (size_t ii = 0; ii < static_cast<size_t>(this->NumNodes()); ++ii) {
+        point.x += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].x * lambda[ii];
+        point.y += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].y * lambda[ii];
+        point.z += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].z * lambda[ii];
+    }
+
+    return point;
 }
 
 Float Triangle::ShapeFn([[maybe_unused]] Integer index, [[maybe_unused]] const Coord &coord) const {
-    Check(index >= 0 && index <= 3, "Invalid shape function index: {}", index);
+    auto parent_coords = PhysicalToParentCoords(coord);
 
-    return PhysicalToParentCoords(coord)[static_cast<size_t>(index)];
+    if (index == 0) {
+        return 1.0 - parent_coords[0] - parent_coords[1];
+    }
+
+    if (index == 1) {
+        return parent_coords[0];
+    }
+
+    if (index == 2) {
+        return parent_coords[1];
+    }
+
+    Abort("Invalid shape function index: {}", index);
 }
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-Float Triangle::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unused]] Float lambda1,
-                                  [[maybe_unused]] Float lambda2) const {
+Float Triangle::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unused]] Float xi,
+                                  [[maybe_unused]] Float eta) const {
+    Check(dimension >= 0 && dimension <= 2, "Invalid dimension in ShapeFnDerivative");
+
+    // lambda_i are the shape functions, xi and eta are the parent coordinates
+    // lambda_1 = 1 - xi - eta
+    // lambda_2 = xi
+    // lambda_3 = eta
+
     if (index == 0) {
         return -1.0;
     }
@@ -97,21 +131,31 @@ Float Triangle::ShapeFnDerivative(Integer index, Integer dimension, const Coord 
 }
 
 Float Triangle::Integrate(const std::function<Float(const Coord &)> integrand) const {
-    auto x0 = (*_nodes)[static_cast<size_t>(_nodeIndices[0])].x;
-    auto y0 = (*_nodes)[static_cast<size_t>(_nodeIndices[0])].y;
-    auto x1 = (*_nodes)[static_cast<size_t>(_nodeIndices[1])].x;
-    auto y1 = (*_nodes)[static_cast<size_t>(_nodeIndices[1])].y;
-    auto x2 = (*_nodes)[static_cast<size_t>(_nodeIndices[2])].x;
-    auto y2 = (*_nodes)[static_cast<size_t>(_nodeIndices[2])].y;
+    std::vector<std::array<Float, 2>> gauss_coords = {{1.0 / 3.0, 1.0 / 3.0}};
 
-    // NOLINTNEXTLINE(clang-diagnostic-pre-c++20-compat-pedantic)
-    Coord center = {.x = (x0 + x1 + x2) / 3.0, .y = (y0 + y1 + y2) / 3.0};
+    std::vector<Float> weights = {1.0};
 
-    auto area = 0.5 * (x0 * (y1 - y2) + x1 * (y2 - y0) + x2 * (y0 - y1));
+    Float result = 0.0;
 
-    constexpr auto weight = 1.0;
+    for (size_t ii = 0; ii < gauss_coords.size(); ++ii) {
+        auto gauss_point = ParentToPhysicalCoords(gauss_coords[ii]);
 
-    return weight * area * integrand(center);
+        Eigen::MatrixXd jacobian = Eigen::MatrixXd::Zero(2, 2);
+        for (size_t kk = 0; kk < static_cast<size_t>(this->NumNodes()); ++kk) {
+            for (Integer jj = 0; jj < 2; ++jj) {
+                jacobian(jj, 0) +=
+                    (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].x *
+                    ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0], gauss_coords[ii][1]);
+                jacobian(jj, 1) +=
+                    (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].y *
+                    ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0], gauss_coords[ii][1]);
+            }
+        }
+
+        result += weights[ii] * integrand(gauss_point) * (0.5 * jacobian.determinant());
+    }
+
+    return result;
 }
 
 } // namespace plasmatic

@@ -18,7 +18,7 @@ class Triangle : public Element {
 
     virtual Float ShapeFn(Integer index, const Coord &coord) const override;
 
-    Float ShapeFnDerivative(Integer index, Integer dimension, Float lambda1, Float lambda2) const;
+    Float ShapeFnDerivative(Integer index, Integer dimension, Float xi, Float eta) const;
 
     virtual Float ShapeFnDerivative(Integer index, Integer dimension, const Coord &coord) const override;
 
@@ -28,7 +28,9 @@ class Triangle : public Element {
 
     static Float ComputeArea(const Coord &p1, const Coord &p2, const Coord &p3);
 
-    std::array<Float, 3> PhysicalToParentCoords(const Coord &coord) const;
+    std::array<Float, 2> PhysicalToParentCoords(const Coord &coord) const;
+
+    Coord ParentToPhysicalCoords(const std::array<Float, 2> &parent_coords) const;
 
   private:
     std::array<Integer, 3> _nodeIndices;
