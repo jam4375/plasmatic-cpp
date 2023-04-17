@@ -32,15 +32,21 @@ std::array<Float, 2> Triangle::PhysicalToParentCoords(const Coord &coord) const 
                                          (*_nodes)[static_cast<size_t>(_nodeIndices[1])]) /
                    area;
 
-    return {lambda2, lambda3};
+    const auto xi = lambda2;
+    const auto eta = lambda3;
+
+    return {xi, eta};
 }
 
 Coord Triangle::ParentToPhysicalCoords(const std::array<Float, 2> &parent_coords) const {
     std::array<Float, 3> lambda = {0.0};
 
-    lambda[0] = 1.0 - parent_coords[0] - parent_coords[1];
-    lambda[1] = parent_coords[0];
-    lambda[2] = parent_coords[1];
+    const auto &xi = parent_coords[0];
+    const auto &eta = parent_coords[1];
+
+    lambda[0] = 1.0 - xi - eta;
+    lambda[1] = xi;
+    lambda[2] = eta;
 
     // NOLINTNEXTLINE(clang-diagnostic-pre-c++20-compat-pedantic)
     Coord point = {.x = 0.0, .y = 0.0, .z = 0.0};
@@ -56,16 +62,19 @@ Coord Triangle::ParentToPhysicalCoords(const std::array<Float, 2> &parent_coords
 Float Triangle::ShapeFn([[maybe_unused]] Integer index, [[maybe_unused]] const Coord &coord) const {
     auto parent_coords = PhysicalToParentCoords(coord);
 
+    const auto &xi = parent_coords[0];
+    const auto &eta = parent_coords[1];
+
     if (index == 0) {
-        return 1.0 - parent_coords[0] - parent_coords[1];
+        return 1.0 - xi - eta;
     }
 
     if (index == 1) {
-        return parent_coords[0];
+        return xi;
     }
 
     if (index == 2) {
-        return parent_coords[1];
+        return eta;
     }
 
     Abort("Invalid shape function index: {}", index);
@@ -145,10 +154,10 @@ Float Triangle::Integrate(const std::function<Float(const Coord &)> integrand) c
             for (Integer jj = 0; jj < 2; ++jj) {
                 jacobian(jj, 0) +=
                     (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].x *
-                    ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0], gauss_coords[ii][1]);
+                    ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[kk][0], gauss_coords[kk][1]);
                 jacobian(jj, 1) +=
                     (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].y *
-                    ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0], gauss_coords[ii][1]);
+                    ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[kk][0], gauss_coords[kk][1]);
             }
         }
 

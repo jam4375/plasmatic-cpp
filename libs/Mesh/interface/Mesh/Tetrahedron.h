@@ -18,6 +18,8 @@ class Tetrahedron : public Element {
 
     virtual Float ShapeFn(Integer index, const Coord &coord) const override;
 
+    Float ShapeFnDerivative(Integer index, Integer dimension, Float xi, Float eta, Float zeta) const;
+
     virtual Float ShapeFnDerivative(Integer index, Integer dimension, const Coord &coord) const override;
 
     virtual Integer GetNodeIndex(Integer index) const override { return _nodeIndices.at(static_cast<size_t>(index)); }
@@ -27,6 +29,10 @@ class Tetrahedron : public Element {
     static Float ComputeVolume(const Coord &p0, const Coord &p1, const Coord &p2, const Coord &p3);
 
     static Float ComputeVolumeDerivative(const Coord &p0, const Coord &p1, const Coord &p2, Integer dimension);
+
+    std::array<Float, 3> PhysicalToParentCoords(const Coord &coord) const;
+
+    Coord ParentToPhysicalCoords(const std::array<Float, 3> &parent_coords) const;
 
   private:
     std::array<Integer, 4> _nodeIndices;
