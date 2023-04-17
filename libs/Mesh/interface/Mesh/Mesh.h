@@ -4,6 +4,7 @@
 #include "Line.h"
 #include "Tetrahedron.h"
 #include "Triangle.h"
+#include "TriangleOrder2.h"
 
 #include "Utility/Utility.h"
 

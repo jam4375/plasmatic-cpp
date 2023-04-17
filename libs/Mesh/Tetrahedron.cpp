@@ -202,14 +202,14 @@ Float Tetrahedron::Integrate([[maybe_unused]] const std::function<Float(const Co
         for (size_t kk = 0; kk < static_cast<size_t>(this->NumNodes()); ++kk) {
             for (Integer jj = 0; jj < 3; ++jj) {
                 jacobian(jj, 0) += (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].x *
-                                   ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[kk][0],
-                                                     gauss_coords[kk][1], gauss_coords[kk][2]);
+                                   ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0],
+                                                     gauss_coords[ii][1], gauss_coords[ii][2]);
                 jacobian(jj, 1) += (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].y *
-                                   ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[kk][0],
-                                                     gauss_coords[kk][1], gauss_coords[kk][2]);
+                                   ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0],
+                                                     gauss_coords[ii][1], gauss_coords[ii][2]);
                 jacobian(jj, 2) += (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].z *
-                                   ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[kk][0],
-                                                     gauss_coords[kk][1], gauss_coords[kk][2]);
+                                   ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0],
+                                                     gauss_coords[ii][1], gauss_coords[ii][2]);
             }
         }
 
