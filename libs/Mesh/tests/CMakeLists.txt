@@ -1,6 +1,6 @@
 # cmake-format: off
 configure_test_executable(NAME MeshTest
-                          SOURCE_FILES main.cpp TriangleOrder2.cpp
+                          SOURCE_FILES main.cpp LineOrder2.cpp TriangleOrder2.cpp
                           SOURCE_DIR "."
                           BUILD_LINK_LIBRARIES ${PROJECT_NAME}::Mesh)
 # cmake-format: on

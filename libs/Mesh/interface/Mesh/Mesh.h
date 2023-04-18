@@ -2,6 +2,7 @@
 
 #include "Element.h"
 #include "Line.h"
+#include "LineOrder2.h"
 #include "Tetrahedron.h"
 #include "Triangle.h"
 #include "TriangleOrder2.h"

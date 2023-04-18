@@ -51,7 +51,7 @@ Coord TriangleOrder2::ParentToPhysicalCoords(const std::array<Float, 2> &parent_
 
     // NOLINTNEXTLINE(clang-diagnostic-pre-c++20-compat-pedantic)
     Coord point = {.x = 0.0, .y = 0.0, .z = 0.0};
-    for (size_t ii = 0; ii < static_cast<size_t>(this->NumNodes()); ++ii) {
+    for (size_t ii = 0; ii < lambda.size(); ++ii) {
         point.x += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].x * lambda[ii];
         point.y += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].y * lambda[ii];
         point.z += (*_nodes)[static_cast<size_t>(_nodeIndices[ii])].z * lambda[ii];
@@ -100,7 +100,7 @@ Float TriangleOrder2::ShapeFn([[maybe_unused]] Integer index, [[maybe_unused]] c
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Float TriangleOrder2::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unused]] Float xi,
                                         [[maybe_unused]] Float eta) const {
-    Check(dimension >= 0 && dimension <= 2, "Invalid dimension in ShapeFnDerivative");
+    Check(dimension >= 0 && dimension < 2, "Invalid dimension in ShapeFnDerivative");
 
     // lambda_i are the area coordinates, xi and eta are the parent coordinates
     const auto lambda_1 = 1.0 - xi - eta;

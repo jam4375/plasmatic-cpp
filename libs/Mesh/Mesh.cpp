@@ -260,6 +260,24 @@ Mesh::Mesh(const std::filesystem::path &filename) : _nodes(std::make_shared<std:
                             static_cast<Integer>(_elements[static_cast<size_t>(dimension)].size()));
                         _elements[static_cast<size_t>(dimension)].push_back(
                             std::make_shared<Tetrahedron>(node_indices, _nodes));
+                    } else if (element_type == 8) {
+                        // 3-node line
+
+                        Integer element_tag = 0;
+                        Integer ind1 = 0;
+                        Integer ind2 = 0;
+                        Integer ind3 = 0;
+
+                        std::stringstream ss(line);
+                        ss >> element_tag >> ind1 >> ind2 >> ind3;
+
+                        std::array<Integer, 3> node_indices = {ind1 - 1, ind2 - 1, ind3 - 1};
+
+                        constexpr auto dimension = 1; // 1d
+                        _entities[entity_tag][static_cast<size_t>(dimension)].push_back(
+                            static_cast<Integer>(_elements[static_cast<size_t>(dimension)].size()));
+                        _elements[static_cast<size_t>(dimension)].push_back(
+                            std::make_shared<LineOrder2>(node_indices, _nodes));
                     } else if (element_type == 9) {
                         // 6-node triangle
 

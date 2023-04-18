@@ -15,10 +15,10 @@ TEST(MeshTest, TriangleOrder2) {
 
     TriangleOrder2 tri({0, 1, 2, 3, 4, 5}, nodes);
 
-    for (Integer ii = 0; ii < 3; ++ii) {
+    for (Integer ii = 0; ii < nodes->size(); ++ii) {
         EXPECT_DOUBLE_EQ(tri.ShapeFn(ii, (*nodes)[static_cast<size_t>(ii)]), 1.0) << ", ii = " << ii;
 
-        for (Integer jj = 0; jj < 3; ++jj) {
+        for (Integer jj = 0; jj < nodes->size(); ++jj) {
             if (ii == jj) {
                 continue;
             }
@@ -28,11 +28,11 @@ TEST(MeshTest, TriangleOrder2) {
         }
     }
 
-    for (Integer ii = 0; ii < 3; ++ii) {
+    for (Integer ii = 0; ii < nodes->size(); ++ii) {
         auto sum = 0.0;
         sum += tri.ShapeFn(ii, (*nodes)[static_cast<size_t>(ii)]);
 
-        for (Integer jj = 0; jj < 3; ++jj) {
+        for (Integer jj = 0; jj < nodes->size(); ++jj) {
             if (ii == jj) {
                 continue;
             }
@@ -58,10 +58,10 @@ TEST(MeshTest, TriangleOrder2ShapeFnDerivatives) {
 
     TriangleOrder2 tri({0, 1, 2, 3, 4, 5}, nodes);
 
-    for (Integer ii = 0; ii < 6; ++ii) {
+    for (Integer ii = 0; ii < nodes->size(); ++ii) {
         constexpr auto eps = 1.0e-8;
 
-        Coord p1 = {.x = 0.0, .y = 0.0, .z = 0.0};
+        Coord p1 = {.x = 0.25, .y = 0.1, .z = 0.0};
         Coord p2x = {.x = p1.x + eps, .y = p1.y, .z = p1.z};
         Coord p2y = {.x = p1.x, .y = p1.y + eps, .z = p1.z};
 

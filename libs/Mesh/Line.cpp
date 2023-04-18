@@ -22,7 +22,7 @@ Float Line::ShapeFn(Integer index, Float xi) const {
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Float Line::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unused]] Float xi) const {
-    Check(dimension == 0, "Invalid shape function derivative dimension = {}", dimension);
+    Check(dimension == 0, "Line: Invalid shape function derivative dimension = {}", dimension);
 
     if (index == 0) {
         return -1.0;
@@ -81,7 +81,7 @@ Float Line::ShapeFnDerivative(Integer index, Integer dimension, [[maybe_unused]]
 
     Eigen::VectorXd global_derivs = jacobian.bdcSvd().solve(shape_fn_derivs);
 
-    Check(dimension >= 0 && dimension <= 3, "Invalid shape function derivative dimension: {}", dimension);
+    Check(dimension >= 0 && dimension <= 3, "Line: Invalid shape function derivative dimension: {}", dimension);
 
     return global_derivs(dimension);
 }
