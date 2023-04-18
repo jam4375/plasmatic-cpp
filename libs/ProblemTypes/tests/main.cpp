@@ -44,6 +44,19 @@ TEST(ProblemTypesTest, HeatEq3D) {
     problem.WriteVTK("heat3d.vtk");
 }
 
+TEST(ProblemTypesTest, HeatEq3D_quadratic_mesh) {
+    HeatEq3D::Input input = {.mesh_filename = GetExecutablePath() / "assets/ProblemTypes/mesh3d_quadratic.msh",
+                             .thermal_conductivity = 1.0,
+                             .dirichlet_bcs = {{"fixed", 100.0}, {"load", -100.0}},
+                             .neumann_bcs = {}};
+
+    HeatEq3D problem(input);
+
+    problem.Solve();
+
+    problem.WriteVTK("heat3d_quadratic.vtk");
+}
+
 } // namespace plasmatic
 
 int main(int argc, char **argv) {

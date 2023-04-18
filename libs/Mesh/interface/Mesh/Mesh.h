@@ -4,6 +4,7 @@
 #include "Line.h"
 #include "LineOrder2.h"
 #include "Tetrahedron.h"
+#include "TetrahedronOrder2.h"
 #include "Triangle.h"
 #include "TriangleOrder2.h"
 

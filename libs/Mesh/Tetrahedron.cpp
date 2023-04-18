@@ -17,22 +17,6 @@ Float Tetrahedron::ComputeVolume(const Coord &p0, const Coord &p1, const Coord &
     return volume_6x / 6.0;
 }
 
-Float Tetrahedron::ComputeVolumeDerivative(const Coord &p0, const Coord &p1, const Coord &p2, Integer dimension) {
-    if (dimension == 0) { // x
-        return 1.0 / 6.0 * ((p1.y * p2.z - p1.z * p2.y) + p0.y * (-p2.z + p1.z) - p0.z * (-p2.y + p1.y));
-    }
-
-    if (dimension == 1) { // y
-        return 1.0 / 6.0 * ((-p1.x * p2.z + p1.z * p2.x) - p0.x * (-p2.z + p1.z) - p0.z * (p2.x - p1.x));
-    }
-
-    if (dimension == 2) { // z
-        return 1.0 / 6.0 * ((p1.x * p2.y - p1.y * p2.x) - p0.x * (p2.y - p1.y) + p0.y * (p2.x - p1.x));
-    }
-
-    Abort("Invalid volume derivative dimension: {}", dimension);
-}
-
 std::array<Float, 3> Tetrahedron::PhysicalToParentCoords(const Coord &coord) const {
     auto volume = Tetrahedron::ComputeVolume(
         (*_nodes)[static_cast<size_t>(_nodeIndices[0])], (*_nodes)[static_cast<size_t>(_nodeIndices[1])],

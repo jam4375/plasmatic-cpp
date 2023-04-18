@@ -28,8 +28,6 @@ class Tetrahedron : public Element {
 
     static Float ComputeVolume(const Coord &p0, const Coord &p1, const Coord &p2, const Coord &p3);
 
-    static Float ComputeVolumeDerivative(const Coord &p0, const Coord &p1, const Coord &p2, Integer dimension);
-
     std::array<Float, 3> PhysicalToParentCoords(const Coord &coord) const;
 
     Coord ParentToPhysicalCoords(const std::array<Float, 3> &parent_coords) const;
