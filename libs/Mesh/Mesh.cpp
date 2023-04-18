@@ -374,8 +374,19 @@ void Mesh::WriteVTK(const std::filesystem::path &filename) const {
     for (const auto &elements : _elements) {
         for (const auto &element : elements) {
             out << element->NumNodes();
+
             for (Integer jj = 0; jj < element->NumNodes(); ++jj) {
-                out << " " << element->GetNodeIndex(jj);
+
+                // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+                if (element->VTKCellType() == 24 && jj == 8) {
+                    out << " " << element->GetNodeIndex(9);
+                }
+                // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+                else if (element->VTKCellType() == 24 && jj == 9) {
+                    out << " " << element->GetNodeIndex(8);
+                } else {
+                    out << " " << element->GetNodeIndex(jj);
+                }
             }
             out << std::endl;
         }

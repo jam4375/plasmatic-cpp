@@ -103,15 +103,15 @@ Float TetrahedronOrder2::ShapeFn(Integer index, [[maybe_unused]] const Coord &co
     }
 
     if (index == 5) {
-        return 4.0 * lambda_1 * lambda_3;
+        return 4.0 * lambda_2 * lambda_3;
     }
 
     if (index == 6) {
-        return 4.0 * lambda_4 * lambda_1;
+        return 4.0 * lambda_3 * lambda_1;
     }
 
     if (index == 7) {
-        return 4.0 * lambda_3 * lambda_2;
+        return 4.0 * lambda_1 * lambda_4;
     }
 
     if (index == 8) {
@@ -137,9 +137,9 @@ Float TetrahedronOrder2::ShapeFnDerivative(Integer index, Integer dimension, Flo
 
     // N_a = (2*lambda_a - 1)*lambda_a     for    a = 1,2,3
     // N_5 = 4*lambda_1*lambda_2
-    // N_6 = 4*lambda_1*lambda_3
-    // N_7 = 4*lambda_4*lambda_1
-    // N_8 = 4*lambda_2*lambda_3
+    // N_6 = 4*lambda_2*lambda_3
+    // N_7 = 4*lambda_3*lambda_1
+    // N_8 = 4*lambda_1*lambda_4
     // N_9 = 4*lambda_3*lambda_4
     // N_10 = 4*lambda_4*lambda_2
 
@@ -181,25 +181,7 @@ Float TetrahedronOrder2::ShapeFnDerivative(Integer index, Integer dimension, Flo
     }
 
     if (index == 5) {
-        // N_6 = 4*lambda_1*lambda_3
-        if (dimension == 1) {
-            return 4.0 * lambda_3 * -1.0 + 4.0 * lambda_1;
-        }
-
-        return 4.0 * lambda_3 * -1.0;
-    }
-
-    if (index == 6) {
-        // N_7 = 4*lambda_4*lambda_1
-        if (dimension == 2) {
-            return 4.0 * lambda_4 * -1.0 + 4.0 * lambda_1;
-        }
-
-        return 4.0 * lambda_4 * -1.0;
-    }
-
-    if (index == 7) {
-        // N_8 = 4*lambda_2*lambda_3
+        // N_6 = 4*lambda_2*lambda_3
         if (dimension == 0) {
             return 4.0 * lambda_3;
         }
@@ -209,6 +191,24 @@ Float TetrahedronOrder2::ShapeFnDerivative(Integer index, Integer dimension, Flo
         }
 
         return 0.0;
+    }
+
+    if (index == 6) {
+        // N_7 = 4*lambda_3*lambda_1
+        if (dimension == 1) {
+            return 4.0 * lambda_3 * -1.0 + 4.0 * lambda_1;
+        }
+
+        return 4.0 * lambda_3 * -1.0;
+    }
+
+    if (index == 7) {
+        // N_8 = 4*lambda_1*lambda_4
+        if (dimension == 2) {
+            return 4.0 * lambda_4 * -1.0 + 4.0 * lambda_1;
+        }
+
+        return 4.0 * lambda_4 * -1.0;
     }
 
     if (index == 8) {

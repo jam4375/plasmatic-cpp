@@ -12,9 +12,9 @@ TEST(MeshTest, TetrahedronOrder2) {
     nodes->push_back({.x = 0.0, .y = 0.0, .z = 1.0});
 
     nodes->push_back({.x = 0.5, .y = 0.0, .z = 0.0});
+    nodes->push_back({.x = 0.5, .y = 0.5, .z = 0.0});
     nodes->push_back({.x = 0.0, .y = 0.5, .z = 0.0});
     nodes->push_back({.x = 0.0, .y = 0.0, .z = 0.5});
-    nodes->push_back({.x = 0.5, .y = 0.5, .z = 0.0});
     nodes->push_back({.x = 0.0, .y = 0.5, .z = 0.5});
     nodes->push_back({.x = 0.5, .y = 0.0, .z = 0.5});
 
@@ -60,9 +60,9 @@ TEST(MeshTest, TetrahedronOrder2ShapeFnDerivatives) {
     nodes->push_back({.x = 0.0, .y = 0.0, .z = 1.0});
 
     nodes->push_back({.x = 0.5, .y = 0.0, .z = 0.0});
+    nodes->push_back({.x = 0.5, .y = 0.5, .z = 0.0});
     nodes->push_back({.x = 0.0, .y = 0.5, .z = 0.0});
     nodes->push_back({.x = 0.0, .y = 0.0, .z = 0.5});
-    nodes->push_back({.x = 0.5, .y = 0.5, .z = 0.0});
     nodes->push_back({.x = 0.0, .y = 0.5, .z = 0.5});
     nodes->push_back({.x = 0.5, .y = 0.0, .z = 0.5});
 
@@ -71,7 +71,7 @@ TEST(MeshTest, TetrahedronOrder2ShapeFnDerivatives) {
     for (Integer ii = 0; ii < nodes->size(); ++ii) {
         constexpr auto eps = 1.0e-8;
 
-        Coord p1 = {.x = 0.0, .y = 0.0, .z = 0.0};
+        Coord p1 = {.x = 0.2, .y = 0.15, .z = 0.0};
         Coord p2x = {.x = p1.x + eps, .y = p1.y, .z = p1.z};
         Coord p2y = {.x = p1.x, .y = p1.y + eps, .z = p1.z};
         Coord p2z = {.x = p1.x, .y = p1.y, .z = p1.z + eps};
