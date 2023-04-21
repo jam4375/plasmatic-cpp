@@ -33,7 +33,7 @@ class Mesh {
 
     void AddVectorField(const std::string &field_name);
 
-    std::shared_ptr<Element> GetElement(Integer dimension, Integer element_id) {
+    std::shared_ptr<Element> GetElement(Integer dimension, Integer element_id) const {
         return _elements.at(static_cast<size_t>(dimension))[static_cast<size_t>(element_id)];
     }
 
@@ -48,6 +48,8 @@ class Mesh {
     const std::vector<Integer> &GetPhysicalEntity(const std::string &physical_name, Integer dimension) const {
         return _physicalEntities.at(physical_name)[static_cast<size_t>(dimension)];
     }
+
+    void WriteSurfaceMesh(const std::filesystem::path &base_filename) const;
 
   private:
     std::shared_ptr<std::vector<Coord>> _nodes;

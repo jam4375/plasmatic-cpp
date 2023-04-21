@@ -439,4 +439,37 @@ void Mesh::VectorFieldSetValue(const std::string &field_name, Integer index, std
     _vectorFields.at(field_name)[static_cast<size_t>(index)] = value;
 }
 
+void Mesh::WriteSurfaceMesh(const std::filesystem::path &base_filename) const {
+    constexpr auto dimension = 2; // 2d
+
+    std::ofstream out_vert(base_filename.string() + "_verts.csv");
+    for (const auto &coord : *_nodes) {
+        // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+        out_vert << std::setprecision(16) << coord.x << "," << coord.y << "," << coord.z << std::endl;
+    }
+    out_vert.close();
+
+    for (const auto &[key, value] : _entities) {
+        if (value[dimension].empty()) {
+            continue;
+        }
+
+        std::ofstream out_tri(base_filename.string() + "_" + std::to_string(key) + "_tris.csv");
+        for (auto element_id : value[dimension]) {
+            auto element = this->GetElement(dimension, element_id);
+
+            for (Integer ii = 0; ii < element->NumNodes(); ++ii) {
+                auto node_index = element->GetNodeIndex(ii);
+
+                if (ii != 0) {
+                    out_tri << ",";
+                }
+                out_tri << node_index;
+            }
+            out_tri << std::endl;
+        }
+        out_tri.close();
+    }
+}
+
 } // namespace plasmatic
