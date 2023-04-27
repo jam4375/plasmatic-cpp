@@ -1,5 +1,5 @@
 # plasmatic
-Finite element simulation code
+Finite element simulation code mostly written with C++ using PETSc and Eigen for linear algebra.
 
 ## Building
 ```bash
