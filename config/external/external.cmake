@@ -8,6 +8,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/gtest.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/cxxopts.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/fmt.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/eigen.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/nlohmann_json.cmake")
 
 # Restore clang-tidy configuration:
 set(CMAKE_CXX_CLANG_TIDY
