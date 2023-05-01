@@ -1,0 +1,8 @@
+{
+  "command": "run_thermal_sim",
+  "mesh_filepath": "bin/assets/ProblemTypes/mesh2d_quadratic.msh",
+  "thermal_conductivity": 1.0,
+  "dirichlet_bcs": [{ "surface_name": "physical_curve_1", "value": 100.0 }],
+  "neumann_bcs": [{ "surface_name": "physical_curve_2", "value": -100.0 }],
+  "output_file": "thermal_2d"
+}
