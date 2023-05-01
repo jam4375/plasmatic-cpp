@@ -1,13 +1,39 @@
-#include "Mesh/Mesh.h"
-#include "Utility/Utility.h"
+#include "ProblemTypes/ProblemTypes.h"
 
 #include <cxxopts.hpp>
+#include <nlohmann/json.hpp>
+
+#include <fstream>
 
 namespace plasmatic {
-static auto Run(const std::string &command, const std::string &mesh_filepath) -> int {
+static auto Run(const nlohmann::json &input) -> int {
+    auto command = input["command"].get<std::string>();
+
     if (command == "surface_mesh") {
+        auto mesh_filepath = input["mesh_filepath"].get<std::string>();
         Mesh mesh(mesh_filepath);
         mesh.WriteSurfaceMesh("surface_mesh");
+    } else if (command == "run_thermal_sim") {
+        HeatEq2D::Input thermal_input = {.mesh_filename = input["mesh_filepath"].get<std::string>(),
+                                         .thermal_conductivity = input["thermal_conductivity"].get<Float>(),
+                                         .dirichlet_bcs = {{}},
+                                         .neumann_bcs = {{}}};
+
+        for (const auto &item : input["dirichlet_bcs"].items()) {
+            thermal_input.dirichlet_bcs.insert(
+                {item.value()["surface_name"].get<std::string>(), item.value()["value"].get<Float>()});
+        }
+
+        for (const auto &item : input["neumann_bcs"].items()) {
+            thermal_input.neumann_bcs.insert(
+                {item.value()["surface_name"].get<std::string>(), item.value()["value"].get<Float>()});
+        }
+
+        HeatEq2D problem(thermal_input);
+
+        problem.Solve();
+
+        problem.WriteVTK(input["output_file"].get<std::string>() + ".vtk");
     } else {
         Abort("Unknown command: {}", command);
     }
@@ -26,8 +52,7 @@ auto main(int argc, char **argv) -> int {
         options->add_options()
             ("h,help", "Print usage message")
             ("v,verbosity", "Logging verbosity level (Debug, Info, Warn, or Error), default is 'Debug'", cxxopts::value<std::string>())
-            ("m,mesh", "Mesh file (*.msh)", cxxopts::value<std::string>())
-            ("c,command", "Command (surface_mesh, ...)", cxxopts::value<std::string>())
+            ("i,input", "JSON input file", cxxopts::value<std::string>())
         ;
         // clang-format on
 
@@ -54,18 +79,15 @@ auto main(int argc, char **argv) -> int {
             }
         }
 
-        std::string mesh_filepath;
-        if (result.count("mesh") == 1) {
-            mesh_filepath = result["mesh"].as<std::string>();
-        }
-
-        std::string command;
-        if (result.count("command") == 1) {
-            command = result["command"].as<std::string>();
+        nlohmann::json input = {};
+        if (result.count("input") == 1) {
+            std::ifstream in(result["input"].as<std::string>());
+            input = nlohmann::json::parse(in);
+            in.close();
         }
 
         // Entry point:
-        return plasmatic::Run(command, mesh_filepath);
+        return plasmatic::Run(input);
     } catch (const cxxopts::option_not_exists_exception &e) {
         std::cerr << "ERROR: " << e.what() << std::endl;
         std::cout << std::endl;
