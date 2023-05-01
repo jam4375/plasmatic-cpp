@@ -4,7 +4,7 @@
 #include <cxxopts.hpp>
 
 namespace plasmatic {
-static auto Run(const std::string command, const std::string &mesh_filepath) -> int {
+static auto Run(const std::string &command, const std::string &mesh_filepath) -> int {
     if (command == "surface_mesh") {
         Mesh mesh(mesh_filepath);
         mesh.WriteSurfaceMesh("surface_mesh");
