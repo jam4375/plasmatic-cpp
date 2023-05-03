@@ -8,5 +8,5 @@ configure_executable(NAME plasmatic
                      BUILD_LINK_LIBRARIES ${PROJECT_NAME}::ProblemTypes cxxopts nlohmann_json::nlohmann_json)
 # cmake-format: on
 
-add_test(NAME ${PROJECT_NAME}_plasmatic_test COMMAND $<TARGET_FILE:${PROJECT_NAME}_plasmatic> -h)
-add_test(NAME ${PROJECT_NAME}_plasmatic_test_thermal COMMAND $<TARGET_FILE:${PROJECT_NAME}_plasmatic> -i ${CMAKE_CURRENT_SOURCE_DIR}/config/thermal.json WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+add_test(NAME ${PROJECT_NAME}_plasmatic_test COMMAND $<TARGET_FILE:plasmatic> -h)
+add_test(NAME ${PROJECT_NAME}_plasmatic_test_thermal COMMAND $<TARGET_FILE:plasmatic> -i ${CMAKE_CURRENT_SOURCE_DIR}/config/thermal.json WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
