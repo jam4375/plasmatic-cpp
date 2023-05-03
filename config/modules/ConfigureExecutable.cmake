@@ -3,7 +3,7 @@ function(configure_executable)
     set(multiValueArgs SOURCE_FILES BUILD_LINK_LIBRARIES)
     cmake_parse_arguments(EXE "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    set(ExecutableTargetName ${PROJECT_NAME}_${EXE_NAME})
+    set(ExecutableTargetName ${EXE_NAME})
 
     message(
         STATUS
