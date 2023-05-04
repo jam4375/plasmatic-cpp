@@ -4,6 +4,8 @@ Multiphysics finite element simulation code mostly written with C++ using PETSc 
 
 ## Building
 
+Use the following commands to build the code: (replace `<NUM_CORES>` with the number of CPU cores on your machine)
+
 ```bash
 git clone git@github.com:jam4375/plasmatic-cpp.git
 cd plasmatic-cpp
@@ -13,10 +15,11 @@ cmake ..
 make -j <NUM_CORES>
 ```
 
-## Building Documentation
+## Building & Viewing Documentation
 
 ```bash
-make docs
+make plasmatic_docs
+open docs/index.html
 ```
 
 ## Running Tests
