@@ -10,7 +10,7 @@ namespace plasmatic {
 
 class Tetrahedron : public Element {
   public:
-    Tetrahedron(const std::array<Integer, 4> &node_indices, const std::shared_ptr<std::vector<Coord>> &nodes);
+    Tetrahedron(const std::array<Integer, 4> &node_indices, std::shared_ptr<std::vector<Coord>> nodes);
 
     virtual Integer NumNodes() const override { return 4; }
 

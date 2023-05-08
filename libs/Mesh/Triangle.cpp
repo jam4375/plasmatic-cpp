@@ -4,8 +4,8 @@
 
 namespace plasmatic {
 
-Triangle::Triangle(const std::array<Integer, 3> &node_indices, const std::shared_ptr<std::vector<Coord>> &nodes)
-    : _nodeIndices(node_indices), _nodes(nodes) {}
+Triangle::Triangle(const std::array<Integer, 3> &node_indices, std::shared_ptr<std::vector<Coord>> nodes)
+    : _nodeIndices(node_indices), _nodes(std::move(nodes)) {}
 
 Float Triangle::ComputeArea(const Coord &p1, const Coord &p2, const Coord &p3) {
     auto x12 = p2.x - p1.x;

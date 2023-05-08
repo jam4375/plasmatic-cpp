@@ -10,7 +10,7 @@ namespace plasmatic {
 
 class Triangle : public Element {
   public:
-    Triangle(const std::array<Integer, 3> &node_indices, const std::shared_ptr<std::vector<Coord>> &nodes);
+    Triangle(const std::array<Integer, 3> &node_indices, std::shared_ptr<std::vector<Coord>> nodes);
 
     virtual Integer NumNodes() const override { return 3; }
 

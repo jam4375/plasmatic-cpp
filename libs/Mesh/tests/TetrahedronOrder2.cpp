@@ -20,10 +20,10 @@ TEST(MeshTest, TetrahedronOrder2) {
 
     TetrahedronOrder2 tet({0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, nodes);
 
-    for (Integer ii = 0; ii < nodes->size(); ++ii) {
+    for (Integer ii = 0; ii < static_cast<Integer>(nodes->size()); ++ii) {
         EXPECT_DOUBLE_EQ(tet.ShapeFn(ii, (*nodes)[static_cast<size_t>(ii)]), 1.0) << ", ii = " << ii;
 
-        for (Integer jj = 0; jj < nodes->size(); ++jj) {
+        for (Integer jj = 0; jj < static_cast<Integer>(nodes->size()); ++jj) {
             if (ii == jj) {
                 continue;
             }
@@ -33,11 +33,11 @@ TEST(MeshTest, TetrahedronOrder2) {
         }
     }
 
-    for (Integer ii = 0; ii < nodes->size(); ++ii) {
+    for (Integer ii = 0; ii < static_cast<Integer>(nodes->size()); ++ii) {
         auto sum = 0.0;
         sum += tet.ShapeFn(ii, (*nodes)[static_cast<size_t>(ii)]);
 
-        for (Integer jj = 0; jj < nodes->size(); ++jj) {
+        for (Integer jj = 0; jj < static_cast<Integer>(nodes->size()); ++jj) {
             if (ii == jj) {
                 continue;
             }
@@ -68,7 +68,7 @@ TEST(MeshTest, TetrahedronOrder2ShapeFnDerivatives) {
 
     TetrahedronOrder2 tet({0, 1, 2, 3, 4, 5, 6, 7, 8, 9}, nodes);
 
-    for (Integer ii = 0; ii < nodes->size(); ++ii) {
+    for (Integer ii = 0; ii < static_cast<Integer>(nodes->size()); ++ii) {
         constexpr auto eps = 1.0e-8;
 
         Coord p1 = {.x = 0.2, .y = 0.15, .z = 0.0};

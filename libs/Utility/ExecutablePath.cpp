@@ -1,4 +1,5 @@
 #include "interface/Utility/ExecutablePath.h"
+#include "interface/Utility/Check.h"
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -32,7 +33,7 @@ std::filesystem::path GetExecutablePath() {
     std::string link = oss.str();
 
     // Read the contents of the link.
-    int count = readlink(link.c_str(), buffer.data(), bufferSize);
+    auto count = readlink(link.c_str(), buffer.data(), bufferSize);
     Check(count != -1, "Could not read symbolic link");
     buffer[count] = '\0';
 

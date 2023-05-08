@@ -10,7 +10,7 @@ namespace plasmatic {
 
 class TriangleOrder2 : public Element {
   public:
-    TriangleOrder2(const std::array<Integer, 6> &node_indices, const std::shared_ptr<std::vector<Coord>> &nodes);
+    TriangleOrder2(const std::array<Integer, 6> &node_indices, std::shared_ptr<std::vector<Coord>> nodes);
 
     virtual Integer NumNodes() const override { return 6; }
 

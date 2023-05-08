@@ -4,8 +4,8 @@
 
 namespace plasmatic {
 
-LineOrder2::LineOrder2(const std::array<Integer, 3> &node_indices, const std::shared_ptr<std::vector<Coord>> &nodes)
-    : _nodeIndices(node_indices), _nodes(nodes) {}
+LineOrder2::LineOrder2(const std::array<Integer, 3> &node_indices, std::shared_ptr<std::vector<Coord>> nodes)
+    : _nodeIndices(node_indices), _nodes(std::move(nodes)) {}
 
 Float LineOrder2::ComputeLength(const Coord &p0, const Coord &p1) {
     return std::sqrt(std::pow(p1.x - p0.x, 2) + std::pow(p1.y - p0.y, 2) + std::pow(p1.z - p0.z, 2));

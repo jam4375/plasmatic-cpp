@@ -5,8 +5,8 @@
 namespace plasmatic {
 
 TetrahedronOrder2::TetrahedronOrder2(const std::array<Integer, 10> &node_indices,
-                                     const std::shared_ptr<std::vector<Coord>> &nodes)
-    : _nodeIndices(node_indices), _nodes(nodes) {}
+                                     std::shared_ptr<std::vector<Coord>> nodes)
+    : _nodeIndices(node_indices), _nodes(std::move(nodes)) {}
 
 Float TetrahedronOrder2::ComputeVolume(const Coord &p0, const Coord &p1, const Coord &p2, const Coord &p3) {
     auto volume_6x =

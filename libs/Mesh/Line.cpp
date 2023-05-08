@@ -4,8 +4,8 @@
 
 namespace plasmatic {
 
-Line::Line(const std::array<Integer, 2> &node_indices, const std::shared_ptr<std::vector<Coord>> &nodes)
-    : _nodeIndices(node_indices), _nodes(nodes) {}
+Line::Line(const std::array<Integer, 2> &node_indices, std::shared_ptr<std::vector<Coord>> nodes)
+    : _nodeIndices(node_indices), _nodes(std::move(nodes)) {}
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 Float Line::ShapeFn(Integer index, Float xi) const {

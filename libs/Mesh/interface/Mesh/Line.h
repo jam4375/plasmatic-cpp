@@ -10,7 +10,7 @@ namespace plasmatic {
 
 class Line : public Element {
   public:
-    Line(const std::array<Integer, 2> &node_indices, const std::shared_ptr<std::vector<Coord>> &nodes);
+    Line(const std::array<Integer, 2> &node_indices, std::shared_ptr<std::vector<Coord>> nodes);
 
     virtual Integer NumNodes() const override { return 2; }
 

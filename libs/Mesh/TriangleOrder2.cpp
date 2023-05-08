@@ -4,9 +4,8 @@
 
 namespace plasmatic {
 
-TriangleOrder2::TriangleOrder2(const std::array<Integer, 6> &node_indices,
-                               const std::shared_ptr<std::vector<Coord>> &nodes)
-    : _nodeIndices(node_indices), _nodes(nodes) {}
+TriangleOrder2::TriangleOrder2(const std::array<Integer, 6> &node_indices, std::shared_ptr<std::vector<Coord>> nodes)
+    : _nodeIndices(node_indices), _nodes(std::move(nodes)) {}
 
 Float TriangleOrder2::ComputeArea(const Coord &p1, const Coord &p2, const Coord &p3) {
     auto x12 = p2.x - p1.x;

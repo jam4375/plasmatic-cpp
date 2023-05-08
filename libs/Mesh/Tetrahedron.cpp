@@ -4,8 +4,8 @@
 
 namespace plasmatic {
 
-Tetrahedron::Tetrahedron(const std::array<Integer, 4> &node_indices, const std::shared_ptr<std::vector<Coord>> &nodes)
-    : _nodeIndices(node_indices), _nodes(nodes) {}
+Tetrahedron::Tetrahedron(const std::array<Integer, 4> &node_indices, std::shared_ptr<std::vector<Coord>> nodes)
+    : _nodeIndices(node_indices), _nodes(std::move(nodes)) {}
 
 Float Tetrahedron::ComputeVolume(const Coord &p0, const Coord &p1, const Coord &p2, const Coord &p3) {
     auto volume_6x =
