@@ -13,11 +13,11 @@ message(STATUS "PETSc library directory: ${PETSc_LIB_DIR}")
 find_package(MPI REQUIRED)
 
 if(UNIX AND NOT APPLE)
-    set(PETSC_LIB "${PETSc_LIB_DIR}/libpetsc.so")
+    set(PETSc_LIB "${PETSc_LIB_DIR}/libpetsc.so")
 endif()
 
 if(APPLE)
-    set(PETSC_LIB "${PETSc_LIB_DIR}/libpetsc.dylib")
+    set(PETSc_LIB "${PETSc_LIB_DIR}/libpetsc.dylib")
 endif()
 
 # cmake-format: off
@@ -26,9 +26,9 @@ configure_library(NAME LinearAlgebra
                   SOURCE_DIR "."
                   INTERFACE_DIR "interface"
                   BUILD_LINK_LIBRARIES ""
-                  INTERFACE_LINK_LIBRARIES ${PETSC_LIB} ${PROJECT_NAME}::Utility)
+                  INTERFACE_LINK_LIBRARIES ${PETSc_LIB} ${PROJECT_NAME}::Utility)
 # cmake-format: on
 
-target_include_directories(${PROJECT_NAME}_LinearAlgebra SYSTEM PUBLIC ${PETSC_INCLUDE_DIR} ${MPI_INCLUDE_PATH})
+target_include_directories(${PROJECT_NAME}_LinearAlgebra SYSTEM PUBLIC ${PETSc_INCLUDE_DIR} ${MPI_INCLUDE_PATH})
 
 add_subdirectory(tests)
