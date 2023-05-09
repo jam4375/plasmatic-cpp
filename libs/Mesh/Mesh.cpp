@@ -413,7 +413,6 @@ void Mesh::WriteVTK(const std::filesystem::path &filename) const {
 
     for (const auto &[data_name, values] : _vectorFields) {
         out << "VECTORS " << data_name << " double" << std::endl;
-        out << "LOOKUP_TABLE default" << std::endl;
         for (const auto &value : values) {
             out << std::setprecision(float_precision) << value[0] << " " << value[1] << " " << value[2] << std::endl;
         }

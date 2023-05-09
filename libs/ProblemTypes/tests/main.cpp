@@ -57,6 +57,20 @@ TEST(ProblemTypesTest, HeatEq3D_quadratic_mesh) {
     problem.WriteVTK("heat3d_quadratic.vtk");
 }
 
+TEST(ProblemTypesTest, Mechanical) {
+    Mechanical::Input input = {.mesh_filename = GetExecutablePath() / "assets/ProblemTypes/mesh3d_quadratic.msh",
+                               .youngs_modulus = 69.0e9,
+                               .poisson_ratio = 0.32,
+                               .dirichlet_bcs = {{"fixed", {0.0, 0.0, 0.0}}},
+                               .neumann_bcs = {{"load", {0.0, -100.0, 0.0}}}};
+
+    Mechanical problem(input);
+
+    problem.Solve();
+
+    problem.WriteVTK("mechanical.vtk");
+}
+
 } // namespace plasmatic
 
 int main(int argc, char **argv) {
