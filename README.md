@@ -31,7 +31,7 @@ ctest -j <NUM_CORES>
 
 ## Running a Mechanical Simulation
 
-Run the following command to start a mechanical simulation. The output should be written in the same directory as `mechanical.vtk` and can be viewed with ParaView.
+Run the following command to start a mechanical simulation. The output will be written to the file `mechanical.vtk` in the same directory and can be viewed with ParaView.
 ```bash
 cd build/bin
 ./plasmatic -i mechanical.json
