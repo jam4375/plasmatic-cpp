@@ -50,6 +50,7 @@ void Mechanical::Solve() {
 
                 for (Integer kk = 0; kk < 3; ++kk) {
                     for (Integer mm = 0; mm < 3; ++mm) {
+                        // TODO(jason): do the integration over the whole matrix instead of just Floats for efficiency
                         auto value = element->Integrate([element, ii, jj, D, kk, mm](const Coord &pos) -> Float {
                             Eigen::MatrixXd Ba = Eigen::MatrixXd::Zero(6, 3);
                             Ba(0, 0) = element->ShapeFnDerivative(ii, 0, pos);
