@@ -1,6 +1,6 @@
 # plasmatic
 
-Multiphysics finite element simulation code mostly written with C++ using PETSc and Eigen for linear algebra. Plasmatic is capable of thermal simulation in both 2D and 3D. It reads input mesh geometry in the Gmsh file format and outputs results in the VTK file format for visualization in ParaView.
+Multiphysics finite element simulation code mostly written with C++ using PETSc and Eigen for linear algebra. Plasmatic is capable of thermal and mechanical simulation in 2D and 3D. It reads input mesh geometry in the Gmsh file format and outputs results in the VTK file format for visualization in ParaView.
 
 ## Building
 
@@ -27,4 +27,24 @@ open docs/index.html
 ```bash
 cd <REPO_ROOT>/build
 ctest -j <NUM_CORES>
+```
+
+## Running a Mechanical Simulation
+
+Run the following command to start a mechanical simulation. The output should be written in the same directory as `mechanical.vtk` and can be viewed with ParaView.
+```bash
+cd build/bin
+./plasmatic -i mechanical.json
+```
+where `mechanical.json` contains input configuration similar to below:
+```json
+{
+  "command": "run_mechanical_sim",
+  "mesh_filepath": "assets/ProblemTypes/mesh3d_quadratic.msh",
+  "youngs_modulus": 69.0e9,
+  "poisson_ratio": 0.32,
+  "dirichlet_bcs": [{ "surface_name": "fixed", "value": [0.0, 0.0, 0.0] }],
+  "neumann_bcs": [{ "surface_name": "load", "value": [0.0, -100.0, 0.0] }],
+  "output_file": "mechanical"
+}
 ```
