@@ -35,6 +35,38 @@ static auto Run(const nlohmann::json &input) -> int {
         problem.Solve();
 
         problem.WriteVTK(input["output_file"].get<std::string>() + ".vtk");
+    } else if (command == "run_mechanical_sim") {
+        Mechanical::Input mechanical_input = {.mesh_filename = input["mesh_filepath"].get<std::string>(),
+                                              .youngs_modulus = input["youngs_modulus"].get<Float>(),
+                                              .poisson_ratio = input["poisson_ratio"].get<Float>(),
+                                              .dirichlet_bcs = {},
+                                              .neumann_bcs = {}};
+
+        for (const auto &item : input["dirichlet_bcs"].items()) {
+            std::array<Float, 3> values = {};
+            auto values_vec = item.value()["value"].get<std::vector<Float>>();
+            for (Integer ii = 0; ii < values.size(); ++ii) {
+                values[ii] = values_vec[ii];
+            }
+
+            mechanical_input.dirichlet_bcs.insert({item.value()["surface_name"].get<std::string>(), values});
+        }
+
+        for (const auto &item : input["neumann_bcs"].items()) {
+            std::array<Float, 3> values = {};
+            auto values_vec = item.value()["value"].get<std::vector<Float>>();
+            for (Integer ii = 0; ii < values.size(); ++ii) {
+                values[ii] = values_vec[ii];
+            }
+
+            mechanical_input.neumann_bcs.insert({item.value()["surface_name"].get<std::string>(), values});
+        }
+
+        Mechanical problem(mechanical_input);
+
+        problem.Solve();
+
+        problem.WriteVTK(input["output_file"].get<std::string>() + ".vtk");
     } else {
         Abort("Unknown command: {}", command);
     }

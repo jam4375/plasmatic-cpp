@@ -10,3 +10,4 @@ configure_executable(NAME plasmatic
 
 add_test(NAME plasmatic_test COMMAND $<TARGET_FILE:plasmatic> -h)
 add_test(NAME plasmatic_test_thermal COMMAND $<TARGET_FILE:plasmatic> -i ${CMAKE_CURRENT_SOURCE_DIR}/config/thermal.json WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+add_test(NAME plasmatic_test_mechanical COMMAND $<TARGET_FILE:plasmatic> -i ${CMAKE_CURRENT_SOURCE_DIR}/config/mechanical.json WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
