@@ -3,6 +3,8 @@
 #include "Coord.h"
 #include "Utility/Utility.h"
 
+#include <Eigen/Dense>
+
 #include <array>
 #include <vector>
 
@@ -23,6 +25,9 @@ class Element {
     virtual Integer GetNodeIndex(Integer index) const = 0;
 
     virtual Float Integrate(const std::function<Float(const Coord &)> integrand) const = 0;
+
+    virtual Eigen::MatrixXd Integrate(const std::function<Eigen::MatrixXd(const Coord &)> integrand, Integer rows,
+                                      Integer cols) const = 0;
 
   private:
 };

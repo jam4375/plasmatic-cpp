@@ -26,6 +26,9 @@ class LineOrder2 : public Element {
 
     virtual Float Integrate(const std::function<Float(const Coord &)> integrand) const override;
 
+    virtual Eigen::MatrixXd Integrate(const std::function<Eigen::MatrixXd(const Coord &)> integrand, Integer rows,
+                                      Integer cols) const override;
+
     static Float ComputeLength(const Coord &p0, const Coord &p1);
 
     Float PhysicalToParentCoords(const Coord &coord) const;

@@ -28,6 +28,9 @@ class Line : public Element {
 
     virtual Float Integrate(const std::function<Float(const Coord &)> integrand) const override;
 
+    virtual Eigen::MatrixXd Integrate(const std::function<Eigen::MatrixXd(const Coord &)> integrand, Integer rows,
+                                      Integer cols) const override;
+
   private:
     std::array<Integer, 2> _nodeIndices;
     std::shared_ptr<std::vector<Coord>> _nodes;

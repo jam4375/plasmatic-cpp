@@ -309,4 +309,43 @@ Float TetrahedronOrder2::Integrate([[maybe_unused]] const std::function<Float(co
     return result;
 }
 
+Eigen::MatrixXd
+TetrahedronOrder2::Integrate([[maybe_unused]] const std::function<Eigen::MatrixXd(const Coord &)> integrand,
+                             Integer rows, Integer cols) const {
+    constexpr auto alpha = 0.5854102;
+    constexpr auto beta = 0.1381966;
+
+    std::vector<std::array<Float, 3>> gauss_coords = {
+        {beta, beta, beta}, {alpha, beta, beta}, {beta, alpha, beta}, {beta, beta, alpha}};
+
+    // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers,readability-magic-numbers)
+    std::vector<Float> weights = {0.25, 0.25, 0.25, 0.25};
+
+    Eigen::MatrixXd result = Eigen::MatrixXd::Zero(rows, cols);
+
+    for (size_t ii = 0; ii < gauss_coords.size(); ++ii) {
+        auto gauss_point = ParentToPhysicalCoords(gauss_coords[ii]);
+
+        Eigen::MatrixXd jacobian = Eigen::MatrixXd::Zero(3, 3);
+
+        for (size_t kk = 0; kk < static_cast<size_t>(this->NumNodes()); ++kk) {
+            for (Integer jj = 0; jj < 3; ++jj) {
+                jacobian(jj, 0) += (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].x *
+                                   ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0],
+                                                     gauss_coords[ii][1], gauss_coords[ii][2]);
+                jacobian(jj, 1) += (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].y *
+                                   ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0],
+                                                     gauss_coords[ii][1], gauss_coords[ii][2]);
+                jacobian(jj, 2) += (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].z *
+                                   ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0],
+                                                     gauss_coords[ii][1], gauss_coords[ii][2]);
+            }
+        }
+
+        result += weights[ii] * integrand(gauss_point) * jacobian.determinant() / 6.0;
+    }
+
+    return result;
+}
+
 } // namespace plasmatic

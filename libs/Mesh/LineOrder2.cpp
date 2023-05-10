@@ -128,4 +128,29 @@ Float LineOrder2::Integrate(const std::function<Float(const Coord &)> integrand)
     return result;
 }
 
+Eigen::MatrixXd LineOrder2::Integrate(const std::function<Eigen::MatrixXd(const Coord &)> integrand, Integer rows,
+                                      Integer cols) const {
+    std::vector<Float> gauss_coords = {1.0 / std::sqrt(3.0), -1.0 / std::sqrt(3.0)};
+
+    std::vector<Float> weights = {0.5, 0.5};
+
+    Eigen::MatrixXd result = Eigen::MatrixXd::Zero(rows, cols);
+
+    for (size_t ii = 0; ii < gauss_coords.size(); ++ii) {
+        auto gauss_point = ParentToPhysicalCoords(gauss_coords[ii]);
+
+        Eigen::MatrixXd jacobian = Eigen::MatrixXd::Zero(1, 1);
+        for (size_t kk = 0; kk < static_cast<size_t>(this->NumNodes()); ++kk) {
+            for (Integer jj = 0; jj < 1; ++jj) {
+                jacobian(jj, 0) += (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].x *
+                                   ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii]);
+            }
+        }
+
+        result += weights[ii] * integrand(gauss_point) * std::abs(jacobian.determinant());
+    }
+
+    return result;
+}
+
 } // namespace plasmatic

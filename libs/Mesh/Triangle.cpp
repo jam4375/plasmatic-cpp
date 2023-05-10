@@ -167,4 +167,33 @@ Float Triangle::Integrate(const std::function<Float(const Coord &)> integrand) c
     return result;
 }
 
+Eigen::MatrixXd Triangle::Integrate(const std::function<Eigen::MatrixXd(const Coord &)> integrand, Integer rows,
+                                    Integer cols) const {
+    std::vector<std::array<Float, 2>> gauss_coords = {{1.0 / 3.0, 1.0 / 3.0}};
+
+    std::vector<Float> weights = {1.0};
+
+    Eigen::MatrixXd result = Eigen::MatrixXd::Zero(rows, cols);
+
+    for (size_t ii = 0; ii < gauss_coords.size(); ++ii) {
+        auto gauss_point = ParentToPhysicalCoords(gauss_coords[ii]);
+
+        Eigen::MatrixXd jacobian = Eigen::MatrixXd::Zero(2, 2);
+        for (size_t kk = 0; kk < static_cast<size_t>(this->NumNodes()); ++kk) {
+            for (Integer jj = 0; jj < 2; ++jj) {
+                jacobian(jj, 0) +=
+                    (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].x *
+                    ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0], gauss_coords[ii][1]);
+                jacobian(jj, 1) +=
+                    (*_nodes)[static_cast<size_t>(_nodeIndices[kk])].y *
+                    ShapeFnDerivative(static_cast<Integer>(kk), jj, gauss_coords[ii][0], gauss_coords[ii][1]);
+            }
+        }
+
+        result += weights[ii] * integrand(gauss_point) * (0.5 * std::abs(jacobian.determinant()));
+    }
+
+    return result;
+}
+
 } // namespace plasmatic

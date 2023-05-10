@@ -26,6 +26,9 @@ class Tetrahedron : public Element {
 
     virtual Float Integrate(const std::function<Float(const Coord &)> integrand) const override;
 
+    virtual Eigen::MatrixXd Integrate(const std::function<Eigen::MatrixXd(const Coord &)> integrand, Integer rows,
+                                      Integer cols) const override;
+
     static Float ComputeVolume(const Coord &p0, const Coord &p1, const Coord &p2, const Coord &p3);
 
     std::array<Float, 3> PhysicalToParentCoords(const Coord &coord) const;

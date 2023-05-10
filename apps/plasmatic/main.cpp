@@ -45,7 +45,7 @@ static auto Run(const nlohmann::json &input) -> int {
         for (const auto &item : input["dirichlet_bcs"].items()) {
             std::array<Float, 3> values = {};
             auto values_vec = item.value()["value"].get<std::vector<Float>>();
-            for (Integer ii = 0; ii < values.size(); ++ii) {
+            for (size_t ii = 0; ii < values.size(); ++ii) {
                 values[ii] = values_vec[ii];
             }
 
@@ -55,7 +55,7 @@ static auto Run(const nlohmann::json &input) -> int {
         for (const auto &item : input["neumann_bcs"].items()) {
             std::array<Float, 3> values = {};
             auto values_vec = item.value()["value"].get<std::vector<Float>>();
-            for (Integer ii = 0; ii < values.size(); ++ii) {
+            for (size_t ii = 0; ii < values.size(); ++ii) {
                 values[ii] = values_vec[ii];
             }
 

@@ -48,38 +48,39 @@ void Mechanical::Solve() {
             for (Integer jj = 0; jj < element->NumNodes(); ++jj) {
                 auto col = element->GetNodeIndex(jj);
 
+                auto value = element->Integrate(
+                    [element, ii, jj, D](const Coord &pos) -> Eigen::MatrixXd {
+                        Eigen::MatrixXd Ba = Eigen::MatrixXd::Zero(6, 3);
+                        Ba(0, 0) = element->ShapeFnDerivative(ii, 0, pos);
+                        Ba(1, 1) = element->ShapeFnDerivative(ii, 1, pos);
+                        Ba(2, 2) = element->ShapeFnDerivative(ii, 2, pos);
+                        Ba(3, 0) = element->ShapeFnDerivative(ii, 1, pos);
+                        Ba(3, 1) = element->ShapeFnDerivative(ii, 0, pos);
+                        Ba(4, 1) = element->ShapeFnDerivative(ii, 2, pos);
+                        Ba(4, 2) = element->ShapeFnDerivative(ii, 1, pos);
+                        Ba(5, 0) = element->ShapeFnDerivative(ii, 2, pos);
+                        Ba(5, 2) = element->ShapeFnDerivative(ii, 0, pos);
+
+                        Eigen::MatrixXd Bb = Eigen::MatrixXd::Zero(6, 3);
+                        Bb(0, 0) = element->ShapeFnDerivative(jj, 0, pos);
+                        Bb(1, 1) = element->ShapeFnDerivative(jj, 1, pos);
+                        Bb(2, 2) = element->ShapeFnDerivative(jj, 2, pos);
+                        Bb(3, 0) = element->ShapeFnDerivative(jj, 1, pos);
+                        Bb(3, 1) = element->ShapeFnDerivative(jj, 0, pos);
+                        Bb(4, 1) = element->ShapeFnDerivative(jj, 2, pos);
+                        Bb(4, 2) = element->ShapeFnDerivative(jj, 1, pos);
+                        Bb(5, 0) = element->ShapeFnDerivative(jj, 2, pos);
+                        Bb(5, 2) = element->ShapeFnDerivative(jj, 0, pos);
+
+                        Eigen::MatrixXd inner_mat = Ba.transpose() * D * Bb;
+
+                        return inner_mat;
+                    },
+                    3, 3);
+
                 for (Integer kk = 0; kk < 3; ++kk) {
                     for (Integer mm = 0; mm < 3; ++mm) {
-                        // TODO(jason): do the integration over the whole matrix instead of just Floats for efficiency
-                        auto value = element->Integrate([element, ii, jj, D, kk, mm](const Coord &pos) -> Float {
-                            Eigen::MatrixXd Ba = Eigen::MatrixXd::Zero(6, 3);
-                            Ba(0, 0) = element->ShapeFnDerivative(ii, 0, pos);
-                            Ba(1, 1) = element->ShapeFnDerivative(ii, 1, pos);
-                            Ba(2, 2) = element->ShapeFnDerivative(ii, 2, pos);
-                            Ba(3, 0) = element->ShapeFnDerivative(ii, 1, pos);
-                            Ba(3, 1) = element->ShapeFnDerivative(ii, 0, pos);
-                            Ba(4, 1) = element->ShapeFnDerivative(ii, 2, pos);
-                            Ba(4, 2) = element->ShapeFnDerivative(ii, 1, pos);
-                            Ba(5, 0) = element->ShapeFnDerivative(ii, 2, pos);
-                            Ba(5, 2) = element->ShapeFnDerivative(ii, 0, pos);
-
-                            Eigen::MatrixXd Bb = Eigen::MatrixXd::Zero(6, 3);
-                            Bb(0, 0) = element->ShapeFnDerivative(jj, 0, pos);
-                            Bb(1, 1) = element->ShapeFnDerivative(jj, 1, pos);
-                            Bb(2, 2) = element->ShapeFnDerivative(jj, 2, pos);
-                            Bb(3, 0) = element->ShapeFnDerivative(jj, 1, pos);
-                            Bb(3, 1) = element->ShapeFnDerivative(jj, 0, pos);
-                            Bb(4, 1) = element->ShapeFnDerivative(jj, 2, pos);
-                            Bb(4, 2) = element->ShapeFnDerivative(jj, 1, pos);
-                            Bb(5, 0) = element->ShapeFnDerivative(jj, 2, pos);
-                            Bb(5, 2) = element->ShapeFnDerivative(jj, 0, pos);
-
-                            Eigen::MatrixXd inner_mat = Ba.transpose() * D * Bb;
-
-                            return inner_mat(kk, mm);
-                        });
-
-                        stiffness.AddValue(3 * row + kk, 3 * col + mm, value);
+                        stiffness.AddValue(3 * row + kk, 3 * col + mm, value(kk, mm));
                     }
                 }
             }

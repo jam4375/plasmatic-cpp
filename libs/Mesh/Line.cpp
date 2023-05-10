@@ -104,4 +104,23 @@ Float Line::Integrate(const std::function<Float(const Coord &)> integrand) const
     return weight * length * integrand(midpoint);
 }
 
+Eigen::MatrixXd Line::Integrate(const std::function<Eigen::MatrixXd(const Coord &)> integrand,
+                                [[maybe_unused]] Integer rows, [[maybe_unused]] Integer cols) const {
+    auto x0 = (*_nodes)[static_cast<size_t>(_nodeIndices[0])].x;
+    auto y0 = (*_nodes)[static_cast<size_t>(_nodeIndices[0])].y;
+    auto z0 = (*_nodes)[static_cast<size_t>(_nodeIndices[0])].z;
+    auto x1 = (*_nodes)[static_cast<size_t>(_nodeIndices[1])].x;
+    auto y1 = (*_nodes)[static_cast<size_t>(_nodeIndices[1])].y;
+    auto z1 = (*_nodes)[static_cast<size_t>(_nodeIndices[1])].z;
+
+    // NOLINTNEXTLINE(clang-diagnostic-pre-c++20-compat-pedantic)
+    Coord midpoint = {.x = 0.5 * (x0 + x1), .y = 0.5 * (y0 + y1), .z = 0.5 * (z0 + z1)};
+
+    const auto length = std::sqrt(std::pow(x1 - x0, 2) + std::pow(y1 - y0, 2) + std::pow(z1 - z0, 2));
+
+    constexpr auto weight = 1.0;
+
+    return weight * length * integrand(midpoint);
+}
+
 } // namespace plasmatic
