@@ -117,16 +117,19 @@ Vector Matrix::Solve(const Vector &other) {
     PetscErrorCode ierr = KSPCreate(PETSC_COMM_WORLD, &ksp);
     Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
 
+    ierr = KSPSetType(ksp, KSPGMRES);
+    Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
+
     ierr = KSPSetOperators(ksp, this->_data, this->_data);
     Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
 
     PC preconditioner = nullptr;
     ierr = KSPGetPC(ksp, &preconditioner);
     Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
-    ierr = PCSetType(preconditioner, PCJACOBI);
+    ierr = PCSetType(preconditioner, PCCHOLESKY);
     Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
-    constexpr auto tol = 1.0e-10;
-    ierr = KSPSetTolerances(ksp, tol, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);
+    constexpr auto rel_tol = 1.0e-10;
+    ierr = KSPSetTolerances(ksp, rel_tol, PETSC_DEFAULT, PETSC_DEFAULT, PETSC_DEFAULT);
     Check(ierr == 0, "PETSc returned a non-zero error code: {}", ierr);
 
     ierr = KSPSetFromOptions(ksp);
