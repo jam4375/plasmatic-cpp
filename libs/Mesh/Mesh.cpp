@@ -419,6 +419,17 @@ void Mesh::WriteVTK(const std::filesystem::path &filename) const {
         out << std::endl;
     }
 
+    for (const auto &[data_name, values] : _tensorFields) {
+        out << "TENSORS " << data_name << " double" << std::endl;
+        for (const auto &value : values) {
+            out << std::setprecision(float_precision) << value[0] << " " << value[3] << " " << value[4] << std::endl;
+            out << std::setprecision(float_precision) << value[3] << " " << value[1] << " " << value[5] << std::endl;
+            out << std::setprecision(float_precision) << value[4] << " " << value[5] << " " << value[2] << std::endl;
+            out << std::endl;
+        }
+        out << std::endl;
+    }
+
     out.close();
 }
 
@@ -430,12 +441,20 @@ void Mesh::AddVectorField(const std::string &field_name) {
     _vectorFields.insert({field_name, std::vector<std::array<Float, 3>>(_nodes->size())});
 }
 
+void Mesh::AddTensorField(const std::string &field_name) {
+    _tensorFields.insert({field_name, std::vector<std::array<Float, 6>>(_nodes->size())});
+}
+
 void Mesh::ScalarFieldSetValue(const std::string &field_name, Integer index, Float value) {
     _scalarFields.at(field_name)[static_cast<size_t>(index)] = value;
 }
 
 void Mesh::VectorFieldSetValue(const std::string &field_name, Integer index, std::array<Float, 3> value) {
     _vectorFields.at(field_name)[static_cast<size_t>(index)] = value;
+}
+
+void Mesh::TensorFieldSetValue(const std::string &field_name, Integer index, std::array<Float, 6> value) {
+    _tensorFields.at(field_name)[static_cast<size_t>(index)] = value;
 }
 
 void Mesh::WriteSurfaceMesh(const std::filesystem::path &base_filename) const {

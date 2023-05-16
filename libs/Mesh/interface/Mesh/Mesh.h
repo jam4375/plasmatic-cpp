@@ -33,6 +33,8 @@ class Mesh {
 
     void AddVectorField(const std::string &field_name);
 
+    void AddTensorField(const std::string &field_name);
+
     std::shared_ptr<Element> GetElement(Integer dimension, Integer element_id) const {
         return _elements.at(static_cast<size_t>(dimension))[static_cast<size_t>(element_id)];
     }
@@ -40,6 +42,8 @@ class Mesh {
     void ScalarFieldSetValue(const std::string &field_name, Integer index, Float value);
 
     void VectorFieldSetValue(const std::string &field_name, Integer index, std::array<Float, 3> value);
+
+    void TensorFieldSetValue(const std::string &field_name, Integer index, std::array<Float, 6> value);
 
     const std::vector<Integer> &GetEntity(Integer dimension, Integer entity_id) const {
         return _entities.at(entity_id).at(static_cast<size_t>(dimension));
@@ -61,6 +65,7 @@ class Mesh {
 
     std::unordered_map<std::string, std::vector<Float>> _scalarFields;
     std::unordered_map<std::string, std::vector<std::array<Float, 3>>> _vectorFields;
+    std::unordered_map<std::string, std::vector<std::array<Float, 6>>> _tensorFields;
 };
 
 } // namespace plasmatic
