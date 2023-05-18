@@ -50,6 +50,7 @@ void Mechanical::Solve() {
 
                 auto value = element->Integrate(
                     [element, ii, jj, D](const Coord &pos) -> Eigen::MatrixXd {
+                        // Create the strain--displacement matrices:
                         Eigen::MatrixXd Ba = Eigen::MatrixXd::Zero(6, 3);
                         Ba(0, 0) = element->ShapeFnDerivative(ii, 0, pos);
                         Ba(1, 1) = element->ShapeFnDerivative(ii, 1, pos);
@@ -168,6 +169,7 @@ void Mechanical::Solve() {
             for (Integer jj = 0; jj < element->NumNodes(); ++jj) {
                 auto row = element->GetNodeIndex(jj);
 
+                // Create the strain--displacement matrix:
                 Eigen::MatrixXd Bb = Eigen::MatrixXd::Zero(6, 3);
                 Bb(0, 0) = element->ShapeFnDerivative(jj, 0, pos);
                 Bb(1, 1) = element->ShapeFnDerivative(jj, 1, pos);
@@ -179,6 +181,7 @@ void Mechanical::Solve() {
                 Bb(5, 0) = element->ShapeFnDerivative(jj, 2, pos);
                 Bb(5, 2) = element->ShapeFnDerivative(jj, 0, pos);
 
+                // Extract the current displacement vector:
                 Eigen::MatrixXd disp = Eigen::MatrixXd::Zero(3, 1);
                 disp(0, 0) = displacement_vec.GetValue(3 * row);
                 disp(1, 0) = displacement_vec.GetValue(3 * row + 1);
