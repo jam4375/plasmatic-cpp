@@ -82,7 +82,9 @@ void HeatEq2D::Solve() {
     forcing.Assemble();
 
     // Solve stiffness matrix/forcing vector equation for temperature
+    Log::Info("Beginning linear solve");
     auto temperature_vec = stiffness.Solve(forcing);
+    Log::Info("Finished linear solve");
 
     // Transfer solution to mesh field
     for (Integer ii = 0; ii < temperature_vec.Size(); ++ii) {

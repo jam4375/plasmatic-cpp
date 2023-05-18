@@ -29,6 +29,8 @@ class Mesh {
         return static_cast<Integer>(_elements.at(static_cast<size_t>(dimension)).size());
     }
 
+    Coord GetNodePosition(Integer index) const { return (*_nodes)[static_cast<size_t>(index)]; }
+
     void AddScalarField(const std::string &field_name);
 
     void AddVectorField(const std::string &field_name);

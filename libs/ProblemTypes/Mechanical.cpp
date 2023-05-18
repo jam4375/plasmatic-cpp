@@ -134,13 +134,72 @@ void Mechanical::Solve() {
     forcing.Assemble();
 
     // Solve stiffness matrix/forcing vector equation for displacement
+    Log::Info("Beginning linear solve");
     auto displacement_vec = stiffness.Solve(forcing);
+    Log::Info("Finished linear solve");
 
     // Transfer solution to mesh field
     for (Integer ii = 0; ii < displacement_vec.Size() / 3; ++ii) {
         _mesh.VectorFieldSetValue("displacement", ii,
                                   {displacement_vec.GetValue(3 * ii), displacement_vec.GetValue(3 * ii + 1),
                                    displacement_vec.GetValue(3 * ii + 2)});
+    }
+
+    // Loop over elements and compute the stress:
+    _mesh.AddTensorField("stress");
+    std::vector<Eigen::MatrixXd> stress_vec(static_cast<size_t>(_mesh.GetNumNodes()));
+    std::vector<Float> stress_count(static_cast<size_t>(_mesh.GetNumNodes()));
+
+    for (Integer ii = 0; ii < _mesh.GetNumNodes(); ++ii) {
+        stress_vec[static_cast<size_t>(ii)] = Eigen::MatrixXd::Zero(6, 1);
+        stress_count[static_cast<size_t>(ii)] = 0.0;
+    }
+
+    for (Integer element_id = 0; element_id < _mesh.GetNumElements(dimension); ++element_id) {
+        auto element = _mesh.GetElement(dimension, element_id);
+
+        for (Integer ii = 0; ii < element->NumNodes(); ++ii) {
+            auto node_index = element->GetNodeIndex(ii);
+
+            auto pos = _mesh.GetNodePosition(node_index);
+
+            Eigen::MatrixXd sigma = Eigen::MatrixXd::Zero(6, 1);
+
+            for (Integer jj = 0; jj < element->NumNodes(); ++jj) {
+                auto row = element->GetNodeIndex(jj);
+
+                Eigen::MatrixXd Bb = Eigen::MatrixXd::Zero(6, 3);
+                Bb(0, 0) = element->ShapeFnDerivative(jj, 0, pos);
+                Bb(1, 1) = element->ShapeFnDerivative(jj, 1, pos);
+                Bb(2, 2) = element->ShapeFnDerivative(jj, 2, pos);
+                Bb(3, 0) = element->ShapeFnDerivative(jj, 1, pos);
+                Bb(3, 1) = element->ShapeFnDerivative(jj, 0, pos);
+                Bb(4, 1) = element->ShapeFnDerivative(jj, 2, pos);
+                Bb(4, 2) = element->ShapeFnDerivative(jj, 1, pos);
+                Bb(5, 0) = element->ShapeFnDerivative(jj, 2, pos);
+                Bb(5, 2) = element->ShapeFnDerivative(jj, 0, pos);
+
+                Eigen::MatrixXd disp = Eigen::MatrixXd::Zero(3, 1);
+                disp(0, 0) = displacement_vec.GetValue(3 * row);
+                disp(1, 0) = displacement_vec.GetValue(3 * row + 1);
+                disp(2, 0) = displacement_vec.GetValue(3 * row + 2);
+
+                sigma += D * Bb * disp;
+            }
+
+            stress_vec[static_cast<size_t>(node_index)] += sigma;
+            stress_count[static_cast<size_t>(node_index)] += 1.0;
+        }
+    }
+
+    // Transfer stress to the mesh tensor field:
+    for (Integer ii = 0; ii < _mesh.GetNumNodes(); ++ii) {
+        stress_vec[static_cast<size_t>(ii)] /= stress_count[static_cast<size_t>(ii)];
+
+        _mesh.TensorFieldSetValue("stress", ii,
+                                  {stress_vec[static_cast<size_t>(ii)](0), stress_vec[static_cast<size_t>(ii)](1),
+                                   stress_vec[static_cast<size_t>(ii)](2), stress_vec[static_cast<size_t>(ii)](3),
+                                   stress_vec[static_cast<size_t>(ii)](4), stress_vec[static_cast<size_t>(ii)](5)});
     }
 }
 

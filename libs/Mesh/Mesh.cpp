@@ -422,9 +422,9 @@ void Mesh::WriteVTK(const std::filesystem::path &filename) const {
     for (const auto &[data_name, values] : _tensorFields) {
         out << "TENSORS " << data_name << " double" << std::endl;
         for (const auto &value : values) {
-            out << std::setprecision(float_precision) << value[0] << " " << value[3] << " " << value[4] << std::endl;
-            out << std::setprecision(float_precision) << value[3] << " " << value[1] << " " << value[5] << std::endl;
-            out << std::setprecision(float_precision) << value[4] << " " << value[5] << " " << value[2] << std::endl;
+            out << std::setprecision(float_precision) << value[0] << " " << value[3] << " " << value[5] << std::endl;
+            out << std::setprecision(float_precision) << value[3] << " " << value[1] << " " << value[4] << std::endl;
+            out << std::setprecision(float_precision) << value[5] << " " << value[4] << " " << value[2] << std::endl;
             out << std::endl;
         }
         out << std::endl;
