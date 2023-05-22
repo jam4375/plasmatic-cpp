@@ -146,16 +146,22 @@ void Mechanical::Solve() {
                                    displacement_vec.GetValue(3 * ii + 2)});
     }
 
-    // Loop over elements and compute the stress:
+    // Loop over elements and compute the stress and strain:
     _mesh.AddTensorField("stress");
+    _mesh.AddTensorField("strain");
     std::vector<Eigen::MatrixXd> stress_vec(static_cast<size_t>(_mesh.GetNumNodes()));
     std::vector<Float> stress_count(static_cast<size_t>(_mesh.GetNumNodes()));
+    std::vector<Eigen::MatrixXd> strain_vec(static_cast<size_t>(_mesh.GetNumNodes()));
+    std::vector<Float> strain_count(static_cast<size_t>(_mesh.GetNumNodes()));
 
     for (Integer ii = 0; ii < _mesh.GetNumNodes(); ++ii) {
         stress_vec[static_cast<size_t>(ii)] = Eigen::MatrixXd::Zero(6, 1);
         stress_count[static_cast<size_t>(ii)] = 0.0;
+        strain_vec[static_cast<size_t>(ii)] = Eigen::MatrixXd::Zero(6, 1);
+        strain_count[static_cast<size_t>(ii)] = 0.0;
     }
 
+    // Average the nodal stress and strain with contributions from all elements that the node is in:
     for (Integer element_id = 0; element_id < _mesh.GetNumElements(dimension); ++element_id) {
         auto element = _mesh.GetElement(dimension, element_id);
 
@@ -165,6 +171,8 @@ void Mechanical::Solve() {
             auto pos = _mesh.GetNodePosition(node_index);
 
             Eigen::MatrixXd sigma = Eigen::MatrixXd::Zero(6, 1);
+
+            Eigen::MatrixXd strain = Eigen::MatrixXd::Zero(6, 1);
 
             for (Integer jj = 0; jj < element->NumNodes(); ++jj) {
                 auto row = element->GetNodeIndex(jj);
@@ -187,22 +195,38 @@ void Mechanical::Solve() {
                 disp(1, 0) = displacement_vec.GetValue(3 * row + 1);
                 disp(2, 0) = displacement_vec.GetValue(3 * row + 2);
 
-                sigma += D * Bb * disp;
+                Eigen::MatrixXd strain_local = Bb * disp;
+
+                strain += strain_local;
+
+                sigma += D * strain_local;
             }
 
             stress_vec[static_cast<size_t>(node_index)] += sigma;
             stress_count[static_cast<size_t>(node_index)] += 1.0;
+
+            strain_vec[static_cast<size_t>(node_index)] += strain;
+            strain_count[static_cast<size_t>(node_index)] += 1.0;
         }
     }
 
-    // Transfer stress to the mesh tensor field:
+    // Transfer stress and strain to the mesh tensor field:
     for (Integer ii = 0; ii < _mesh.GetNumNodes(); ++ii) {
+        // Set stress:
         stress_vec[static_cast<size_t>(ii)] /= stress_count[static_cast<size_t>(ii)];
 
         _mesh.TensorFieldSetValue("stress", ii,
                                   {stress_vec[static_cast<size_t>(ii)](0), stress_vec[static_cast<size_t>(ii)](1),
                                    stress_vec[static_cast<size_t>(ii)](2), stress_vec[static_cast<size_t>(ii)](3),
                                    stress_vec[static_cast<size_t>(ii)](4), stress_vec[static_cast<size_t>(ii)](5)});
+
+        // Set strain:
+        strain_vec[static_cast<size_t>(ii)] /= strain_count[static_cast<size_t>(ii)];
+
+        _mesh.TensorFieldSetValue("strain", ii,
+                                  {strain_vec[static_cast<size_t>(ii)](0), strain_vec[static_cast<size_t>(ii)](1),
+                                   strain_vec[static_cast<size_t>(ii)](2), strain_vec[static_cast<size_t>(ii)](3),
+                                   strain_vec[static_cast<size_t>(ii)](4), strain_vec[static_cast<size_t>(ii)](5)});
     }
 }
 
