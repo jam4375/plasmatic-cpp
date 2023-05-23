@@ -42,7 +42,7 @@ static auto Run(const nlohmann::json &input) -> int {
                                               .dirichlet_bcs = {},
                                               .neumann_bcs = {}};
 
-        for (const auto &item : input["dirichlet_bcs"].items()) {
+        for (const auto &item : input["displacement_bcs"].items()) {
             std::array<Float, 3> values = {};
             auto values_vec = item.value()["value"].get<std::vector<Float>>();
             for (size_t ii = 0; ii < values.size(); ++ii) {
@@ -52,7 +52,7 @@ static auto Run(const nlohmann::json &input) -> int {
             mechanical_input.dirichlet_bcs.insert({item.value()["surface_name"].get<std::string>(), values});
         }
 
-        for (const auto &item : input["neumann_bcs"].items()) {
+        for (const auto &item : input["traction_bcs"].items()) {
             std::array<Float, 3> values = {};
             auto values_vec = item.value()["value"].get<std::vector<Float>>();
             for (size_t ii = 0; ii < values.size(); ++ii) {

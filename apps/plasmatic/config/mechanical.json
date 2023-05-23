@@ -3,7 +3,7 @@
   "mesh_filepath": "assets/ProblemTypes/mesh3d_quadratic.msh",
   "youngs_modulus": 69.0e9,
   "poisson_ratio": 0.32,
-  "dirichlet_bcs": [{ "surface_name": "fixed", "value": [0.0, 0.0, 0.0] }],
-  "neumann_bcs": [{ "surface_name": "load", "value": [0.0, -100.0, 0.0] }],
+  "displacement_bcs": [{ "surface_name": "fixed", "value": [0.0, 0.0, 0.0] }],
+  "traction_bcs": [{ "surface_name": "load", "value": [0.0, -100.0, 0.0] }],
   "output_file": "mechanical"
 }
